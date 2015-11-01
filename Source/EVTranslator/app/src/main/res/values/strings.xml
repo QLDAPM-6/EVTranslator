@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">EVTranslator</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_translate1">translate1</string>
+    <string name="title_activity_translate2">translate2</string>
+    <string name="title_activity_folder">folder</string>
 </resources>

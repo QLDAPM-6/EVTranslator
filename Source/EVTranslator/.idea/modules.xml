@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/EVTranslator.iml" filepath="$PROJECT_DIR$/EVTranslator.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/opennlp-tools-1.6.0/opennlp-tools-1.6.0.iml" filepath="$PROJECT_DIR$/opennlp-tools-1.6.0/opennlp-tools-1.6.0.iml" />
     </modules>
   </component>
 </project>

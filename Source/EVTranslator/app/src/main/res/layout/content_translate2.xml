@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="500dp"
+    android:orientation="vertical"
+
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/activity_translate2" tools:context=".translate2"
+    android:weightSum="1">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="500dp"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="340dp"
+                android:layout_height="wrap_content"
+                android:text="ENGLISH"
+                android:layout_margin="10dp"
+                android:paddingLeft="18dp"
+                android:id="@+id/textENGLISH" />
+
+            <ImageButton
+                android:layout_width="20dp"
+                android:layout_height="40dp"
+                android:background="#ffffff"
+                android:backgroundTint="#000000"
+
+                android:id="@+id/daux"
+                android:layout_gravity="right"
+                android:src="@drawable/abc_ic_clear_mtrl_alpha" />
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Text Translate"
+            android:paddingLeft="20dp"
+            android:id="@+id/textViewEng"
+
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="#e5e5e5">
+
+        <android.support.v7.widget.CardView
+            xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:background="#0055A8"
+            android:layout_margin="15dp"
+            android:id="@+id/card_view"
+            android:layout_width="fill_parent"
+            android:layout_height="143dp"
+            card_view:cardBackgroundColor="#4385f6"
+            card_view:cardCornerRadius="2dp"
+            android:elevation="15dp"
+            >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="500dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:text="VIETNAMESE"
+                        android:textColor="#ffffff"
+                        android:layout_margin="10dp"
+                        android:paddingLeft="5dp"
+                        android:id="@+id/textVIETNAMESE" />
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:background="@android:color/transparent"
+                        android:id="@+id/ngoisao"
+                        android:src="@drawable/abc_btn_rating_star_off_mtrl_alpha" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="80dp"
+                    android:text="Text Translated"
+                    android:textColor="#ffffff"
+                    android:paddingLeft="10dp"
+                    android:id="@+id/textViewVi"
+
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/copy"
+                        android:background="@android:color/transparent"
+                        android:paddingRight="20dp"
+                        android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha" />
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/caidat"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </LinearLayout>
+</LinearLayout>
