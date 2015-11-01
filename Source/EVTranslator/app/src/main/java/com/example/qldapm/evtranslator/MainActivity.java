@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity  {
         file_en_token = getResources().openRawResource(R.raw.entoken);
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.enposmaxent);
-
+		//Example NLP
         String []tokens = getTokenizer("Cat is a student");
 
         Span[] spans = findName(tokens);
