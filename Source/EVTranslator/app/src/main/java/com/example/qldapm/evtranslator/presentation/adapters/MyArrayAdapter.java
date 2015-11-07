@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.yeuThich;
+package com.example.qldapm.evtranslator.presentation.adapters;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.yeuThich.Allclass.absFile;
+import com.example.qldapm.evtranslator.models.absFile;
 
 import java.util.List;
 

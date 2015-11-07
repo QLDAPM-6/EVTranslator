@@ -10,7 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.domain.domainservice.HistoryService;
+import com.example.qldapm.evtranslator.domain.services.HistoryService;
 
 import java.util.ArrayList;
 import java.util.HashMap;

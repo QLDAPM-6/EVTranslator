@@ -1,6 +1,6 @@
-package com.example.qldapm.evtranslator.yeuThich.Allclass;
+package com.example.qldapm.evtranslator.models;
 
-import com.example.qldapm.evtranslator.yeuThich.Allclass.absFile;
+import com.example.qldapm.evtranslator.models.absFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Created by vanty on 11/1/2015.
  */
-public class Folder_class extends absFile {
+public class Folder extends absFile {
     public List<absFile>Listchild;
-    public Folder_class()
+    public Folder()
     {
         Listchild = new ArrayList<>();
     }

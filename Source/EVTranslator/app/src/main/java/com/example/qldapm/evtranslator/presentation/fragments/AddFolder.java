@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.Dialogue;
+package com.example.qldapm.evtranslator.presentation.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,15 +15,15 @@ import com.example.qldapm.evtranslator.R;
 /**
  * Created by vanty on 11/1/2015.
  */
-public class ThemmoiFolder extends DialogFragment {
+public class AddFolder extends DialogFragment {
     private String nameString = "";
     private int _thaotac;
-    public ThemmoiFolder(String name)
+    public AddFolder(String name)
     {
         nameString = name;
         _thaotac = 1;
     }
-    public ThemmoiFolder()
+    public AddFolder()
     {_thaotac = 0;}
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -42,12 +42,12 @@ public class ThemmoiFolder extends DialogFragment {
                     public void onClick(DialogInterface dialog, int id) {
                        EditText Name = (EditText)myLayout.findViewById(R.id.namefolder);
                        String textName = Name.getText().toString();
-                        mListener.onDialogPositiveClick(ThemmoiFolder.this,textName,_thaotac);
+                        mListener.onDialogPositiveClick(AddFolder.this,textName,_thaotac);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        ThemmoiFolder.this.getDialog().cancel();
+                        AddFolder.this.getDialog().cancel();
                     }
                 });
         return builder.create();

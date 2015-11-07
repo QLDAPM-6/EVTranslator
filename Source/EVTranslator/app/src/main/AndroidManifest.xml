@@ -21,17 +21,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".translate1"
+            android:name=".presentation.activities.TranslatingActivity"
             android:label="@string/title_activity_translate1"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".translate2"
+            android:name=".presentation.activities.TranslatedActivity"
             android:label="@string/title_activity_translate2"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
         <activity
-            android:name=".yeuThich.folder"
+            android:name=".presentation.activities.FolderActivity"
             android:label="@string/title_activity_folder"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
