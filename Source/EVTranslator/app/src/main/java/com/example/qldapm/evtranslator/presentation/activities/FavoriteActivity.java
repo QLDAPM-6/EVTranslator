@@ -1,29 +1,21 @@
-package com.example.qldapm.evtranslator.yeuThich;
+package com.example.qldapm.evtranslator.presentation.activities;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.qldapm.evtranslator.Dialogue.ThemmoiFolder;
+import com.example.qldapm.evtranslator.presentation.fragments.AddFolder;
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.services.Managerfavorite;
+import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-public class favorite extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity {
 
 
     ListView hienthifavorite;
@@ -39,7 +31,7 @@ public class favorite extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogFragment add = new ThemmoiFolder();
+                DialogFragment add = new AddFolder();
                 add.show(getFragmentManager(),"ThemmoiFolder");
             }
         });
@@ -51,7 +43,7 @@ public class favorite extends AppCompatActivity {
                 //On click
             }
         });
-        adapter = new MyArrayAdapter(this,R.layout.listlayour,Managerfavorite.getIntands().ListFolder);
+        adapter = new MyArrayAdapter(this,R.layout.listlayour, Managerfavorite.getIntands().ListFolder);
         hienthifavorite.setAdapter(adapter);
     }
 }

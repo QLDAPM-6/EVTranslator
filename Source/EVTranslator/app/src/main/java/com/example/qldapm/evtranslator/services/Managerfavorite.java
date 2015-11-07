@@ -1,6 +1,6 @@
-package com.example.qldapm.evtranslator.yeuThich;
+package com.example.qldapm.evtranslator.services;
 
-import com.example.qldapm.evtranslator.yeuThich.Allclass.absFile;
+import com.example.qldapm.evtranslator.models.absFile;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.yeuThich.Allclass;
+package com.example.qldapm.evtranslator.models;
 
 /**
  * Created by vanty on 11/1/2015.
