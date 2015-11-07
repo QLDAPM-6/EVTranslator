@@ -1,33 +1,17 @@
 package com.example.qldapm.evtranslator;
 
 
-import android.content.Context;
-
-import android.content.Intent;
-
 import android.os.Bundle;
+
 import android.provider.UserDictionary;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
-
-
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
-import com.example.qldapm.evtranslator.yeuThich.Allclass.Folder_class;
-import com.example.qldapm.evtranslator.yeuThich.Managerfavorite;
-import com.example.qldapm.evtranslator.yeuThich.Allclass.absFile;
-import com.example.qldapm.evtranslator.yeuThich.folder;
 
 
 import java.io.InputStream;
@@ -38,9 +22,6 @@ import java.util.List;
 
 import opennlp.tools.cmdline.PerformanceMonitor;
 import opennlp.tools.cmdline.parser.ParserTool;
-import opennlp.tools.cmdline.postag.POSModelLoader;
-import opennlp.tools.namefind.NameFinderME;
-import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.parser.Parse;
 import opennlp.tools.parser.Parser;
 import opennlp.tools.parser.ParserFactory;
@@ -49,19 +30,13 @@ import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSSample;
 import opennlp.tools.postag.POSTaggerME;
 
-import opennlp.tools.namefind.NameFinderME;
-import opennlp.tools.namefind.TokenNameFinderModel;
-
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
 import opennlp.tools.tokenize.WhitespaceTokenizer;
-import opennlp.tools.util.InvalidFormatException;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
-
-import opennlp.tools.util.Span;
 
 
 public class MainActivity extends AppCompatActivity  {

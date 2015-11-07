@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.domain.domainservice;
+package com.example.qldapm.evtranslator.services;
 
 /**
  * @author Nhat Huy (ndnhuy)

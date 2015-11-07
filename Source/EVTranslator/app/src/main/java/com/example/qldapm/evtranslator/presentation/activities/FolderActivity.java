@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.yeuThich;
+package com.example.qldapm.evtranslator.presentation.activities;
 
 import android.app.DialogFragment;
 import android.content.Intent;
@@ -14,16 +14,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.qldapm.evtranslator.Dialogue.ThemmoiFolder;
+import com.example.qldapm.evtranslator.presentation.fragments.AddFolder;
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.yeuThich.Allclass.Favorite_Object;
-import com.example.qldapm.evtranslator.yeuThich.Allclass.Folder_class;
-import com.example.qldapm.evtranslator.yeuThich.Allclass.absFile;
+import com.example.qldapm.evtranslator.models.FavoriteObject;
+import com.example.qldapm.evtranslator.models.Folder;
+import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.services.Managerfavorite;
+import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class folder extends AppCompatActivity implements ThemmoiFolder.NoticeDialogListener {
+public class FolderActivity extends AppCompatActivity implements AddFolder.NoticeDialogListener {
 
     ListView hienthifavorite;
     MyArrayAdapter adapter;
@@ -39,7 +41,7 @@ public class folder extends AppCompatActivity implements ThemmoiFolder.NoticeDia
             @Override
             public void onClick(View view) {
                 // call dialogue
-                DialogFragment add = new ThemmoiFolder();
+                DialogFragment add = new AddFolder();
                 add.show(getFragmentManager(),"ThemmoiFolder");
             }
         });
@@ -48,21 +50,21 @@ public class folder extends AppCompatActivity implements ThemmoiFolder.NoticeDia
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Toast.makeText(getApplication(), "On item click", Toast.LENGTH_LONG).show();
-                if(parent.getItemAtPosition(position) instanceof Favorite_Object)
+                if(parent.getItemAtPosition(position) instanceof FavoriteObject)
                 {
                     // show result find world
                 }
                 else
                 {
-                    Folder_class temp = (Folder_class)parent.getItemAtPosition(position);
+                    Folder temp = (Folder)parent.getItemAtPosition(position);
                     // thu nghiem
                     Managerfavorite.getIntands().Listchid = new ArrayList<absFile>();
-                    Favorite_Object temp1 = new Favorite_Object();
+                    FavoriteObject temp1 = new FavoriteObject();
                     temp1.set_name("hello, everyone");
                     temp1.setNgaySave("29/02/1994");
                     Managerfavorite.getIntands().Listchid.add(temp1);
                     // goi favorite
-                    Intent intent = new Intent(getApplication(),favorite.class);
+                    Intent intent = new Intent(getApplication(),FavoriteActivity.class);
                     startActivity(intent);
                 }
 
@@ -81,7 +83,7 @@ public class folder extends AppCompatActivity implements ThemmoiFolder.NoticeDia
         else
         {
             // add new here
-            absFile temp = new Folder_class();
+            absFile temp = new Folder();
             temp.set_name(value);
             Calendar c = Calendar.getInstance();
             String day = c.getTime().toString();
@@ -112,7 +114,7 @@ public class folder extends AppCompatActivity implements ThemmoiFolder.NoticeDia
             case R.id.rename:
             {
                 absFile t = adapter.getItem(info.position);
-                DialogFragment add = new ThemmoiFolder(t.get_name());
+                DialogFragment add = new AddFolder(t.get_name());
                 add.show(getFragmentManager(),"ThemmoiFolder");
             }
             case R.id.delete:
