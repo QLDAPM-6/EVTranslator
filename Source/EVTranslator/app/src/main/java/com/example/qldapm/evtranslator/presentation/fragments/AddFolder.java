@@ -32,7 +32,7 @@ public class AddFolder extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        final View myLayout = inflater.inflate(R.layout.dialogueaddname, null);
+        final View myLayout = inflater.inflate(R.layout.fragment_dialogue_add_folder, null);
         EditText Name = (EditText)myLayout.findViewById(R.id.namefolder);
         Name.setText(nameString);
         builder.setView(myLayout)

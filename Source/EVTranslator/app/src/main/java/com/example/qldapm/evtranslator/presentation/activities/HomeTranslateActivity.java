@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.domain.services.HistoryService;
+import com.example.qldapm.evtranslator.services.HistoryService;
 import com.example.qldapm.evtranslator.presentation.adapters.HistoryAdapter;
 
 
