@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:padding="5px"
+    android:layout_margin="5px">
+
+    <LinearLayout
+        android:id="@+id/item_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/history_english_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ABC"/>
+
+        <TextView
+            android:id="@+id/history_vietnamese_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ABC"/>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/favorite_image_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@mipmap/ic_favorite_unable"/>
+
+
+
+</RelativeLayout>
