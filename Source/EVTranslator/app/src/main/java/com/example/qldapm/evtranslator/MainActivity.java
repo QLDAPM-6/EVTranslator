@@ -83,8 +83,10 @@ public class MainActivity extends AppCompatActivity  {
         file_en_token = getResources().openRawResource(R.raw.entoken);
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
+        file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
         sent.setText(POSTag());
-
+        //Parse();
+/*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity  {
         Managerfavorite.getIntands().addChild(temp);
         Intent intent = new Intent(this,folder.class);
         startActivity(intent);
-
+*/
     }
 
     @Override
@@ -171,9 +173,7 @@ public class MainActivity extends AppCompatActivity  {
 return str;
     }
     public  void Parse() {
-        // http://sourceforge.net/apps/mediawiki/opennlp/index.php?title=Parser#Training_Tool
         try{
-
             ParserModel model = new ParserModel(file_enparser_chunking);
 
             Parser parser = ParserFactory.create(model);

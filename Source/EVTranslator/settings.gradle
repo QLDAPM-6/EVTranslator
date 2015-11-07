@@ -1,1 +1,1 @@
-include ':app', ':opennlp-tools-1.6.0', ':opennlp-uima-1.6.0'
+include ':app', ':opennlp-tools-1.6.0' , 'opennlp-uima-1.6.0'
