@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.os.Bundle;
+import android.provider.UserDictionary;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -31,6 +32,8 @@ import com.example.qldapm.evtranslator.yeuThich.folder;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 import opennlp.tools.cmdline.PerformanceMonitor;
@@ -84,8 +87,7 @@ public class MainActivity extends AppCompatActivity  {
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
-        sent.setText(POSTag());
-        //Parse();
+        Exmple(POSTags("I make a cake"));
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -139,31 +141,23 @@ public class MainActivity extends AppCompatActivity  {
         return null;
     }
 
-
-    public String POSTag(){
-        String str = "";
+    public ArrayList<String> POSTags(String enSentence){
+        ArrayList<String> str = new ArrayList<String>();
         try{
             POSModel model = new POSModel(file_en_pos_maxent);
-            int a = 10;
             PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
             POSTaggerME tagger = new POSTaggerME(model);
-            String input = "I can can a can";
             ObjectStream<String> lineStream = new PlainTextByLineStream(
-                    new StringReader(input));
+                    new StringReader(enSentence));
             perfMon.start();
             String line;
 
             while ((line = lineStream.read()) != null) {
-
                 String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE
                         .tokenize(line);
                 String[] tags = tagger.tag(whitespaceTokenizerLine);
-
                 POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-                str += sample.toString();
-                //Toast.makeText(getApplication(), sample.toString(), Toast.LENGTH_LONG).show();
-                //System.out.println(sample.toString());
-
+                str.add(sample.toString());
                 perfMon.incrementCounter();
             }
             perfMon.stopAndPrintFinalResult();
@@ -171,6 +165,21 @@ public class MainActivity extends AppCompatActivity  {
 
         }
 return str;
+    }
+
+    public Word postagToWord(String postag){
+        String[] splitStr = postag.split("_");
+        Word res = new Word(splitStr[0], splitStr[1], "");
+        return res;
+    }
+
+    public void Exmple(ArrayList<String> postags){
+        ArrayList<Word> words = new ArrayList<>();
+        for (String temp : postags) {
+
+            words.add(postagToWord(temp));
+        }
+        int a;
     }
     public  void Parse() {
         try{
