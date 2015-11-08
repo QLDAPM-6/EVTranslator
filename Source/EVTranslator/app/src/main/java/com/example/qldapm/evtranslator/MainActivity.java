@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity  {
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
-        Exmple(POSTags("I make a cake"));
+        Exmple(POSTags("Beautifully"));
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity  {
         return null;
     }
 
+    //assign pos for all words in the enSentence
     public ArrayList<String> POSTags(String enSentence){
         ArrayList<String> str = new ArrayList<String>();
         try{
@@ -132,7 +133,12 @@ public class MainActivity extends AppCompatActivity  {
                         .tokenize(line);
                 String[] tags = tagger.tag(whitespaceTokenizerLine);
                 POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-                str.add(sample.toString());
+                sent.setText(sample.toString());
+                String[] splitStr = sample.toString().split(" ");
+                for(String postag : splitStr){
+                    str.add(postag);
+                }
+
                 perfMon.incrementCounter();
             }
             perfMon.stopAndPrintFinalResult();
@@ -142,19 +148,22 @@ public class MainActivity extends AppCompatActivity  {
 return str;
     }
 
-    public Word postagToWord(String postag){
+    //split the POSTag with syntax = word_postag into OpenNLPWord
+    public OpenNLPWord postagToWord(String postag){
         String[] splitStr = postag.split("_");
-        Word res = new Word(splitStr[0], splitStr[1], "");
+        OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1], "");
         return res;
     }
 
+    // example.
     public void Exmple(ArrayList<String> postags){
-        ArrayList<Word> words = new ArrayList<>();
+        ArrayList<OpenNLPWord> words = new ArrayList<>();
         for (String temp : postags) {
 
             words.add(postagToWord(temp));
         }
-        int a;
+        DB_EV db_ev = new DB_EV(this);
+        db_ev.getOpenNLWord(words.get(0));
     }
     public  void Parse() {
         try{
