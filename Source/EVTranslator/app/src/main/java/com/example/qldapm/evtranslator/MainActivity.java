@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity  {
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
-        Exmple(POSTags("Beautifully"));
+        //Exmple(POSTags("Beautifully"));
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

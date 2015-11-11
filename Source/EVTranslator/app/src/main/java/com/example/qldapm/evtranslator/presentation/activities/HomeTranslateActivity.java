@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
 import com.example.qldapm.evtranslator.services.HistoryService;
 import com.example.qldapm.evtranslator.presentation.adapters.HistoryAdapter;
 
@@ -16,7 +18,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
-    private RecyclerView.Adapter historyAdapter;
+    private HistoryAdapter historyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +34,10 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
         historyAdapter = new HistoryAdapter(this, new HistoryService());
         recyclerView.setAdapter(historyAdapter);
+
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(historyAdapter);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
 
     }
 
