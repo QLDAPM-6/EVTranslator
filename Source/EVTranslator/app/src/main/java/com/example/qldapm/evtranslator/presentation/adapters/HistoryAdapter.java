@@ -80,6 +80,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         notifyItemRemoved(position);
     }
 
+    public void AddItem(String eng, String viet) {
+        historyService.addToHistory(eng,viet);
+        englishSentencesInHistory.clear();
+        englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public View listView;
         public ViewHolder(View v) {
