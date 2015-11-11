@@ -22,11 +22,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.activities.TranslatingActivity"
-            android:label="@string/title_activity_translate1"
-            android:theme="@style/AppTheme.NoActionBar" >
-        </activity>
-        <activity
             android:name=".presentation.activities.TranslatedActivity"
             android:label="@string/title_activity_translate2"
             android:theme="@style/AppTheme.NoActionBar" >
