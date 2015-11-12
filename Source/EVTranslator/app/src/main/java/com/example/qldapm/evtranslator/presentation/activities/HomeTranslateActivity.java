@@ -1,5 +1,7 @@
 package com.example.qldapm.evtranslator.presentation.activities;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.qldapm.evtranslator.DB_EV;
 import com.example.qldapm.evtranslator.OpenNLPWord;
@@ -55,6 +58,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private LinearLayout translatedText;
     private CardView cardview;
     private ImageButton clearButton;
+
 
     public static InputStream file_en_token;
     public static InputStream file_en_ner_person;
@@ -196,8 +200,18 @@ public class HomeTranslateActivity extends AppCompatActivity {
     }
 
     private void Translated(String outputText) {
-        TextView resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
+        final TextView resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
+        ImageButton copyButton = (ImageButton)translatedText.findViewById(R.id.copy);
         resultBox.setText(outputText);
+        copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("evtranslator", resultBox.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
+            }
+        });
         recyclerView.setVisibility(View.GONE);
         translatedText.setVisibility(View.VISIBLE);
     }

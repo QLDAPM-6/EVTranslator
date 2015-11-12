@@ -121,12 +121,6 @@
                         android:paddingRight="20dp"
                         android:src="@drawable/abc_ic_menu_copy_mtrl_am_alpha" />
 
-                    <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/caidat"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/abc_ic_menu_moreoverflow_mtrl_alpha" />
                 </LinearLayout>
             </LinearLayout>
 
