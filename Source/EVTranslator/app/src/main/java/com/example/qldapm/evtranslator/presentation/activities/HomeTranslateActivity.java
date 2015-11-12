@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -58,6 +59,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private LinearLayout translatedText;
     private CardView cardview;
     private ImageButton clearButton;
+    private Button translateButton;
 
 
     public static InputStream file_en_token;
@@ -76,6 +78,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
         clearButton = (ImageButton) findViewById(R.id.btn_clear);
         translatedText = (LinearLayout)findViewById(R.id.translated_text);
         input = (EditText) findViewById(R.id.touch_to_type_area);
+        translateButton = (Button) findViewById(R.id.btn_translate);
 
         recyclerView.setHasFixedSize(true);
 
@@ -129,6 +132,13 @@ public class HomeTranslateActivity extends AppCompatActivity {
                 input.setText("");
                 ChangeBack();
                 HideSoftKey();
+            }
+        });
+
+        translateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Translating();
             }
         });
 
