@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author Nhat Huy (ndnhuy)
  */
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> implements ItemTouchHelperAdapter{
 
     private final static String TAG = HistoryAdapter.class.getSimpleName();
 
@@ -72,6 +72,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @Override
     public int getItemCount() {
         return englishSentencesInHistory.size();
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        englishSentencesInHistory.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void AddItem(String eng, String viet) {
+        historyService.addToHistory(eng,viet);
+        englishSentencesInHistory.clear();
+        englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
