@@ -3,6 +3,7 @@ package com.example.qldapm.evtranslator.presentation.activities;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -11,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,14 +32,16 @@ import android.widget.Toast;
 import com.example.qldapm.evtranslator.DB_EV;
 import com.example.qldapm.evtranslator.OpenNLPWord;
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
 import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
 import com.example.qldapm.evtranslator.services.HistoryService;
-import com.example.qldapm.evtranslator.presentation.adapters.HistoryAdapter;
 import com.example.qldapm.evtranslator.services.TranslatorService;
 
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import opennlp.tools.cmdline.PerformanceMonitor;
 import opennlp.tools.postag.POSModel;
@@ -60,7 +65,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private CardView cardview;
     private ImageButton clearButton;
     private Button translateButton;
-
+    private TextView resultBox;
 
     public static InputStream file_en_token;
     public static InputStream file_en_ner_person;
@@ -79,6 +84,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
         translatedText = (LinearLayout)findViewById(R.id.translated_text);
         input = (EditText) findViewById(R.id.touch_to_type_area);
         translateButton = (Button) findViewById(R.id.btn_translate);
+        resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
+        ImageButton copyButton = (ImageButton)translatedText.findViewById(R.id.copy);
 
         recyclerView.setHasFixedSize(true);
 
@@ -160,6 +167,16 @@ public class HomeTranslateActivity extends AppCompatActivity {
             }
         });
 
+        copyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("evtranslator", resultBox.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         InitializeNLP();
     }
 
@@ -210,18 +227,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
     }
 
     private void Translated(String outputText) {
-        final TextView resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
-        ImageButton copyButton = (ImageButton)translatedText.findViewById(R.id.copy);
         resultBox.setText(outputText);
-        copyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("evtranslator", resultBox.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
-            }
-        });
+
         recyclerView.setVisibility(View.GONE);
         translatedText.setVisibility(View.VISIBLE);
     }
@@ -241,8 +248,9 @@ public class HomeTranslateActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_favorite) {
+            Intent intent = new Intent(this, FolderActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);
@@ -311,5 +319,95 @@ public class HomeTranslateActivity extends AppCompatActivity {
         //db_ev.getOpenNLWord(words.get(0));
         //Toast.makeText(getApplication(),words.get(0).getVnMeaning(),Toast.LENGTH_LONG).show();
         return res;
+    }
+
+    private class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> implements ItemTouchHelperAdapter {
+
+        private final String TAG = HistoryAdapter.class.getSimpleName();
+
+        private Context context;
+
+        private HistoryService historyService = new HistoryService();
+
+        private HashMap<String, String> historyContainerMap = new HashMap<String, String>();
+
+        private List<String> englishSentencesInHistory = new ArrayList<String>();
+
+        public HistoryAdapter(Context context, HistoryService historyService) {
+            this.context = context;
+            this.historyService = historyService;
+            this.historyContainerMap = historyService.getHistory();
+            englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+        }
+
+        @Override
+        public HistoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            // create a new view
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.history_item_in_list, parent, false);
+            // set the view's size, margins, paddings and layout parameters
+            //...
+            final ImageButton favoriteIcon = (ImageButton) v.findViewById(R.id.favorite_image_button);
+            favoriteIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO Enable favorite icon here
+                    Log.d(TAG, "Replace favorite icon image");
+                }
+            });
+
+
+            ViewHolder vh = new ViewHolder(v);
+            return vh;
+
+        }
+
+        @Override
+        public void onBindViewHolder(HistoryAdapter.ViewHolder viewHolder, int position) {
+            TextView englishContent = (TextView) viewHolder.listView.findViewById(R.id.history_english_textView);
+            final String englishSentence = englishSentencesInHistory.get(position);
+            final String vietnameseSentence = historyContainerMap.get(englishSentencesInHistory.get(position));
+            englishContent.setText(englishSentence);
+
+            TextView vietnameseContent = (TextView) viewHolder.listView.findViewById(R.id.history_vietnamese_textView);
+            vietnameseContent.setText(vietnameseSentence);
+
+            viewHolder.listView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    input.setText(englishSentence);
+                    resultBox.setText(vietnameseSentence);
+                    recyclerView.setVisibility(View.GONE);
+                    translatedText.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
+
+        @Override
+        public int getItemCount() {
+            return englishSentencesInHistory.size();
+        }
+
+        @Override
+        public void onItemDismiss(int position) {
+            englishSentencesInHistory.remove(position);
+            notifyItemRemoved(position);
+        }
+
+        public void AddItem(String eng, String viet) {
+            historyService.addToHistory(eng,viet);
+            englishSentencesInHistory.clear();
+            englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+            notifyDataSetChanged();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            public View listView;
+            public ViewHolder(View v) {
+                super(v);
+                listView = v;
+            }
+        }
     }
 }

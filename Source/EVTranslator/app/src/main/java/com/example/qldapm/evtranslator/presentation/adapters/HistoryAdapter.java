@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.presentation.activities.HomeTranslateActivity;
 import com.example.qldapm.evtranslator.services.HistoryService;
 
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
         });
 
+
         ViewHolder vh = new ViewHolder(v);
         return vh;
 
@@ -66,6 +68,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         TextView vietnameseContent = (TextView) viewHolder.listView.findViewById(R.id.history_vietnamese_textView);
         vietnameseContent.setText(historyContainerMap.get(englishSentencesInHistory.get(position)));
+
     }
 
 

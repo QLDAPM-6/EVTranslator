@@ -2,6 +2,7 @@ package com.example.qldapm.evtranslator.services;
 
 import com.example.qldapm.evtranslator.models.absFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,13 @@ public class Managerfavorite {
     private static Managerfavorite manager_Favorite;
     public List<absFile>ListFolder;
     public List<absFile>Listchid;
-    public static Managerfavorite getIntands()
+
+    private Managerfavorite() {
+        ListFolder = new ArrayList<absFile>();
+        Listchid = new ArrayList<>();
+    }
+
+    public static Managerfavorite getIntance()
     {
         if(manager_Favorite == null)
         {

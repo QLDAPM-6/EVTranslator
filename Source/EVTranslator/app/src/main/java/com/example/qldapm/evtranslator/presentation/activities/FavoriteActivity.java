@@ -43,7 +43,7 @@ public class FavoriteActivity extends AppCompatActivity {
                 //On click
             }
         });
-        adapter = new MyArrayAdapter(this,R.layout.listlayour, Managerfavorite.getIntands().ListFolder);
+        adapter = new MyArrayAdapter(this,R.layout.listlayour, Managerfavorite.getIntance().ListFolder);
         hienthifavorite.setAdapter(adapter);
     }
 }
