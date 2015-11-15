@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.io.InputStream;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity  {
     public static InputStream file_en_ner_person;
     public static InputStream file_en_pos_maxent;
     public static InputStream file_enparser_chunking;
+    DB_EV db_ev;
     private TextView sent;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -62,7 +64,20 @@ public class MainActivity extends AppCompatActivity  {
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
-        Exmple(POSTags("Beautifully"));
+        db_ev = new DB_EV(this);
+
+        String enSentence = "I have a pen";
+        ArrayList<String> posTag_list = POSTags(enSentence);
+        String[] abcd = getTokenizer(enSentence);
+        ArrayList<OpenNLPWord> openNLPWords_list =assignStringtoOpenNLPWord(posTag_list);
+        //sent.setText(openNLPWords_list.get(0).getVnMeaning());
+        //sent.setText(openNLPWords_list.get(0).getVnMeaning() + " " + openNLPWords_list.get(0).getVnMeaning() + " ")
+        String vnSentence= "";
+        for(OpenNLPWord item : openNLPWords_list){
+            item.randomVnMeaing();
+            vnSentence+= item.getVnMeaning() + " ";
+        }
+        sent.setText(vnSentence);
 /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +111,7 @@ public class MainActivity extends AppCompatActivity  {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_favorite) {
             return true;
         }
 
@@ -133,7 +148,7 @@ public class MainActivity extends AppCompatActivity  {
                         .tokenize(line);
                 String[] tags = tagger.tag(whitespaceTokenizerLine);
                 POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-                sent.setText(sample.toString());
+
                 String[] splitStr = sample.toString().split(" ");
                 for(String postag : splitStr){
                     str.add(postag);
@@ -145,44 +160,46 @@ public class MainActivity extends AppCompatActivity  {
         }catch (Exception ex){
 
         }
-return str;
+        return str;
     }
 
     //split the POSTag with syntax = word_postag into OpenNLPWord
     public OpenNLPWord postagToWord(String postag){
         String[] splitStr = postag.split("_");
         OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1], "");
+        db_ev.addMeaming_OpenNLPWord(res);
         return res;
     }
 
     // example.
-    public void Exmple(ArrayList<String> postags){
-        ArrayList<OpenNLPWord> words = new ArrayList<>();
+    public ArrayList<OpenNLPWord> assignStringtoOpenNLPWord(ArrayList<String> postags){
+        ArrayList<OpenNLPWord> res = new ArrayList<>();
         for (String temp : postags) {
-
-            words.add(postagToWord(temp));
+            res.add(postagToWord(temp));
         }
-        DB_EV db_ev = new DB_EV(this);
-        db_ev.getOpenNLWord(words.get(0));
+        //DB_EV db_ev = new DB_EV(this);
+        //db_ev.getOpenNLWord(words.get(0));
+        //Toast.makeText(getApplication(),words.get(0).getVnMeaning(),Toast.LENGTH_LONG).show();
+        return res;
     }
+
+    //public OpenNLPWord
+    /*
     public  void Parse() {
         try{
             ParserModel model = new ParserModel(file_enparser_chunking);
-
             Parser parser = ParserFactory.create(model);
-
             String sentence = "Programcreek is a very huge and useful website.";
             Parse topParses[] = ParserTool.parseLine(sentence, parser, 1);
-
             for (Parse p : topParses)
                 p.show();
 
         }catch (Exception exc){
             int a = 10;
         }
-	/*
+
 	 * (TOP (S (NP (NN Programcreek) ) (VP (VBZ is) (NP (DT a) (ADJP (RB
 	 * very) (JJ huge) (CC and) (JJ useful) ) ) ) (. website.) ) )
-	 */
-    }
+
+    }*/
 }

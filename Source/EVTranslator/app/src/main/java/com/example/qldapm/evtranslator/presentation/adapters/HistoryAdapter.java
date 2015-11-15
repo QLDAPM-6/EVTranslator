@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.presentation.activities.HomeTranslateActivity;
 import com.example.qldapm.evtranslator.services.HistoryService;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.util.List;
 /**
  * @author Nhat Huy (ndnhuy)
  */
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> implements ItemTouchHelperAdapter{
 
     private final static String TAG = HistoryAdapter.class.getSimpleName();
 
@@ -54,6 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
         });
 
+
         ViewHolder vh = new ViewHolder(v);
         return vh;
 
@@ -66,12 +68,26 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
         TextView vietnameseContent = (TextView) viewHolder.listView.findViewById(R.id.history_vietnamese_textView);
         vietnameseContent.setText(historyContainerMap.get(englishSentencesInHistory.get(position)));
+
     }
 
 
     @Override
     public int getItemCount() {
         return englishSentencesInHistory.size();
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        englishSentencesInHistory.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void AddItem(String eng, String viet) {
+        historyService.addToHistory(eng,viet);
+        englishSentencesInHistory.clear();
+        englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

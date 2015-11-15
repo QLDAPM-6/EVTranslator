@@ -45,7 +45,7 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
                 add.show(getFragmentManager(),"ThemmoiFolder");
             }
         });
-        hienthifavorite = (ListView)findViewById(R.id.liv_danhsach);
+        hienthifavorite = (ListView)findViewById(R.id.liv_danhsachfolder);
         hienthifavorite.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -58,44 +58,37 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
                 {
                     Folder temp = (Folder)parent.getItemAtPosition(position);
                     // thu nghiem
-                    Managerfavorite.getIntands().Listchid = new ArrayList<absFile>();
+                    Managerfavorite.getIntance().Listchid = new ArrayList<absFile>();
                     FavoriteObject temp1 = new FavoriteObject();
                     temp1.set_name("hello, everyone");
                     temp1.setNgaySave("29/02/1994");
-                    Managerfavorite.getIntands().Listchid.add(temp1);
+                    Managerfavorite.getIntance().Listchid.add(temp1);
                     // goi favorite
-                    Intent intent = new Intent(getApplication(),FavoriteActivity.class);
+                    Intent intent = new Intent(getApplication(), FavoriteActivity.class);
                     startActivity(intent);
                 }
 
             }
         });
-        adapter = new MyArrayAdapter(this,R.layout.listlayour,Managerfavorite.getIntands().ListFolder);
+        adapter = new MyArrayAdapter(this,R.layout.listlayour,Managerfavorite.getIntance().ListFolder);
         hienthifavorite.setAdapter(adapter);
     }
     // event dialogue click oke
     @Override
     public void onDialogNegativeClick(DialogFragment dialog, String value,int thaotac) {
-        if(thaotac == 1)
-        {
-            //rename here
-        }
-        else
-        {
-            // add new here
-            absFile temp = new Folder();
-            temp.set_name(value);
-            Calendar c = Calendar.getInstance();
-            String day = c.getTime().toString();
-            temp.setNgaySave(day);
-            Managerfavorite.getIntands().addChild(temp);// Them folder
-        }
 
     }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String value,int thaotac) {
-
+        // add new here
+        absFile temp = new Folder();
+        temp.set_name(value);
+        Calendar c = Calendar.getInstance();
+        String day = c.getTime().toString();
+        temp.setNgaySave(day);
+        Managerfavorite.getIntance().addChild(temp);// Them folder
+        adapter.notifyDataSetChanged();
     }
 
     @Override
