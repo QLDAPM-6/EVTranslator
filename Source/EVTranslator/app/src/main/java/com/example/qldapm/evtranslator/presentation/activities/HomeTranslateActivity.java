@@ -37,6 +37,7 @@ import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallb
 import com.example.qldapm.evtranslator.services.HistoryService;
 import com.example.qldapm.evtranslator.services.TranslatorService;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -67,10 +68,10 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private Button translateButton;
     private TextView resultBox;
 
-    public static InputStream file_en_token;
-    public static InputStream file_en_ner_person;
-    public static InputStream file_en_pos_maxent;
-    public static InputStream file_enparser_chunking;
+    public  InputStream file_en_token;
+    public  InputStream file_en_ner_person;
+    //public
+    public  InputStream file_enparser_chunking;
     DB_EV db_ev;
 
     @Override
@@ -184,7 +185,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
         file_en_token = getResources().openRawResource(R.raw.entoken);
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
-        file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
+        //file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
         db_ev = new DB_EV(this);
 
@@ -272,7 +273,9 @@ public class HomeTranslateActivity extends AppCompatActivity {
     //assign pos for all words in the enSentence
     public ArrayList<String> POSTags(String enSentence){
         ArrayList<String> str = new ArrayList<String>();
+        InputStream file_en_pos_maxent = null;
         try{
+            file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
             POSModel model = new POSModel(file_en_pos_maxent);
             PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
             POSTaggerME tagger = new POSTaggerME(model);
@@ -295,8 +298,21 @@ public class HomeTranslateActivity extends AppCompatActivity {
                 perfMon.incrementCounter();
             }
             perfMon.stopAndPrintFinalResult();
+            file_en_pos_maxent.close();
         }catch (Exception ex){
-
+            Toast.makeText(getApplication(),ex.getMessage(),Toast.LENGTH_LONG).show();
+        }finally {
+            if (file_en_pos_maxent != null) {
+                try {
+                    file_en_pos_maxent.close();
+                }
+                catch (IOException e) {
+                    // Not an issue, training already finished.
+                    // The exception should be logged and investigated
+                    // if part of a production system.
+                    e.printStackTrace();
+                }
+            }
         }
         return str;
     }
