@@ -68,7 +68,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private Button translateButton;
     private TextView resultBox;
 
-    public  InputStream file_en_token;
+    //public  InputStream file_en_token;
     public  InputStream file_en_ner_person;
     //public
     public  InputStream file_enparser_chunking;
@@ -183,7 +183,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
     private void InitializeNLP() {
 
-        file_en_token = getResources().openRawResource(R.raw.entoken);
+        //file_en_token = getResources().openRawResource(R.raw.entoken);
         file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         //file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
         file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
@@ -202,13 +202,14 @@ public class HomeTranslateActivity extends AppCompatActivity {
         }
 
         ArrayList<String> posTag_list = POSTags(inputText);
-        String[] abcd = getTokenizer(inputText);
+        String[] abc = getTokenizer(inputText);
         ArrayList<OpenNLPWord> openNLPWords_list =assignStringtoOpenNLPWord(posTag_list);
 
         String vnSentence= "";
         for(OpenNLPWord item : openNLPWords_list){
             item.randomVnMeaing();
-            vnSentence+= item.getVnMeaning() + " ";
+            vnSentence+= item.getVnMeaning()+ " " ;
+            //+item.getVnMeaning() + "|POS_" + item.getPosTag()
         }
         historyAdapter.AddItem(inputText, vnSentence);
         Translated(vnSentence);
@@ -258,14 +259,28 @@ public class HomeTranslateActivity extends AppCompatActivity {
     }
 
     public String[] getTokenizer(String sent) {
+        InputStream file_en_token = null;
         try {
             String tokens[];
-            TokenizerModel model = new TokenizerModel(this.file_en_token);
+            file_en_token = getResources().openRawResource(R.raw.entoken);
+            TokenizerModel model = new TokenizerModel(file_en_token);
             Tokenizer tokenizer = new TokenizerME(model);
             tokens = tokenizer.tokenize(sent);
             return tokens;
         } catch (Exception e) {
             //log the exception
+        }finally {
+            if (file_en_token != null) {
+                try {
+                    file_en_token.close();
+                }
+                catch (IOException e) {
+                    // Not an issue, training already finished.
+                    // The exception should be logged and investigated
+                    // if part of a production system.
+                    e.printStackTrace();
+                }
+            }
         }
         return null;
     }
@@ -320,7 +335,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
     //split the POSTag with syntax = word_postag into OpenNLPWord
     public OpenNLPWord postagToWord(String postag){
         String[] splitStr = postag.split("_");
-        OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1], "");
+        OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1],  splitStr[0]);
         db_ev.addMeaming_OpenNLPWord(res);
         return res;
     }

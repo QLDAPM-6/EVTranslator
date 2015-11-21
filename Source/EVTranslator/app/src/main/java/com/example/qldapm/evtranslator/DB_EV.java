@@ -35,9 +35,7 @@ public class DB_EV extends SQLiteOpenHelper{
         Cursor cursorWord = db.query(WORD.TABLE_NAME, new String[]{WORD.COL_ID,
                         WORD.COL_WORD}, WORD.COL_WORD + "=?",
                 new String[]{enterword.toLowerCase()}, null, null, null, null);
-        if(cursorWord !=null) {
-            cursorWord.moveToNext();
-
+        if(cursorWord.moveToFirst()) {
             int id = Integer.parseInt(cursorWord.getString(0));
             String word = cursorWord.getString(1);
             WORD res = new WORD(id, word);
@@ -93,8 +91,8 @@ public class DB_EV extends SQLiteOpenHelper{
         Cursor cursorPOSTAG = db.query(POSTAG.TABLE_NAME, new String[] { POSTAG.COL_MEANING,
                        }, POSTAG.COL_INIT + "=?",
                 new String[] { postag }, null, null, null, null);
-        if (cursorPOSTAG != null) {
-            cursorPOSTAG.moveToFirst();
+        if (cursorPOSTAG.moveToFirst()) {
+            //cursorPOSTAG.moveToFirst();
             meaning = cursorPOSTAG.getString(0);
             String[] types = meaning.split("_");
             boolean flag = false;
@@ -106,11 +104,12 @@ public class DB_EV extends SQLiteOpenHelper{
                         flag = true;
                         break;
                     }
-
                 }
                 if(flag)
                     break;
             }
+        }else{
+
         }
         return res;
     }
