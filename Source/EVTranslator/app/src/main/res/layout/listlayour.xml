@@ -6,7 +6,8 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginLeft="5dp">
+    android:layout_marginLeft="5dp"
+    android:layout_gravity="center_horizontal">
     <TextView
         android:layout_width="303dp"
         android:layout_height="41dp"
@@ -20,9 +21,10 @@
 </LinearLayout>
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="67dp"
+        android:layout_height="80dp"
         android:layout_alignParentRight="true"
         android:id="@+id/btn_image"
         android:scaleType="fitStart"
-        android:clickable="false" />
+        android:clickable="false"
+        android:layout_gravity="right" />
 </LinearLayout>

@@ -10,4 +10,14 @@ public class FavoriteObject extends absFile {
     public String getType() {
         return "Favorite";
     }
+    private String ID_folder;
+
+
+    public String getID_folder() {
+        return ID_folder;
+    }
+
+    public void setID_folder(String ID_folder) {
+        this.ID_folder = ID_folder;
+    }
 }
