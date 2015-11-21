@@ -32,16 +32,18 @@ import android.widget.Toast;
 import com.example.qldapm.evtranslator.DB_EV;
 import com.example.qldapm.evtranslator.OpenNLPWord;
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
+import com.example.qldapm.evtranslator.models.entity.Sentence;
+import com.example.qldapm.evtranslator.models.repository.SentenceRepository;
+import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
 import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
 import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
 import com.example.qldapm.evtranslator.services.HistoryService;
-import com.example.qldapm.evtranslator.services.TranslatorService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import opennlp.tools.cmdline.PerformanceMonitor;
@@ -57,6 +59,8 @@ import opennlp.tools.util.PlainTextByLineStream;
 
 
 public class HomeTranslateActivity extends AppCompatActivity {
+
+    private final String LOG_TAG = HomeTranslateActivity.class.getSimpleName();
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -74,10 +78,15 @@ public class HomeTranslateActivity extends AppCompatActivity {
     public  InputStream file_enparser_chunking;
     DB_EV db_ev;
 
+
+    SentenceRepository sentenceRepository;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_translate);
+
+        sentenceRepository = new SentenceRepositoryImpl(getApplicationContext());
 
         cardview = (CardView) findViewById(R.id.cardview);
         recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
@@ -93,7 +102,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        historyAdapter = new HistoryAdapter(this, new HistoryService());
+        historyAdapter = new HistoryAdapter(this, new HistoryService(sentenceRepository));
         recyclerView.setAdapter(historyAdapter);
 
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(historyAdapter);
@@ -143,10 +152,24 @@ public class HomeTranslateActivity extends AppCompatActivity {
             }
         });
 
+
+        final EVTranslatorDbHelper dbHelper = new EVTranslatorDbHelper(getApplicationContext());
+
         translateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Translating();
+
+                new HistoryService(sentenceRepository).addToHistory(
+                        input.getText().toString(), "Tieng viet"
+                );
+
+                List<Sentence> sentences = new HistoryService(sentenceRepository).getAllSentences();
+
+                for (Sentence sentence : sentences) {
+                    Log.v(LOG_TAG, sentence.getEnglishSentence() + " - " + sentence.getVietnameseSentence());
+                }
+
+                //Translating();
             }
         });
 
@@ -343,17 +366,17 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
         private Context context;
 
-        private HistoryService historyService = new HistoryService();
+        private HistoryService historyService;
 
-        private HashMap<String, String> historyContainerMap = new HashMap<String, String>();
+        private List<Sentence> sentences;
+        //private HashMap<String, String> historyContainerMap = new HashMap<String, String>();
 
-        private List<String> englishSentencesInHistory = new ArrayList<String>();
+        //private List<String> englishSentencesInHistory = new ArrayList<String>();
 
         public HistoryAdapter(Context context, HistoryService historyService) {
             this.context = context;
             this.historyService = historyService;
-            this.historyContainerMap = historyService.getHistory();
-            englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+            sentences = historyService.getAllSentences();
         }
 
         @Override
@@ -372,7 +395,6 @@ public class HomeTranslateActivity extends AppCompatActivity {
                 }
             });
 
-
             ViewHolder vh = new ViewHolder(v);
             return vh;
 
@@ -381,8 +403,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(HistoryAdapter.ViewHolder viewHolder, int position) {
             TextView englishContent = (TextView) viewHolder.listView.findViewById(R.id.history_english_textView);
-            final String englishSentence = englishSentencesInHistory.get(position);
-            final String vietnameseSentence = historyContainerMap.get(englishSentencesInHistory.get(position));
+            final String englishSentence = sentences.get(position).getEnglishSentence();
+            final String vietnameseSentence = sentences.get(position).getVietnameseSentence();
             englishContent.setText(englishSentence);
 
             TextView vietnameseContent = (TextView) viewHolder.listView.findViewById(R.id.history_vietnamese_textView);
@@ -402,20 +424,23 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return englishSentencesInHistory.size();
+            return sentences.size();
         }
 
         @Override
         public void onItemDismiss(int position) {
-            englishSentencesInHistory.remove(position);
+            historyService.deleteSentenceById(sentences.get(position).getId());
+            sentences.remove(position);
             notifyItemRemoved(position);
         }
 
         public void AddItem(String eng, String viet) {
-            historyService.addToHistory(eng,viet);
-            englishSentencesInHistory.clear();
-            englishSentencesInHistory.addAll(historyService.getHistory().keySet());
+            historyService.addToHistory(eng, viet);
+            sentences.clear();
+            sentences.addAll(historyService.getAllSentences());
+
             notifyDataSetChanged();
+
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
