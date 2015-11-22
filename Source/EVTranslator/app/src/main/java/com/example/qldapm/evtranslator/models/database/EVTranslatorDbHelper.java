@@ -2,6 +2,7 @@ package com.example.qldapm.evtranslator.models.database;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 /**
@@ -16,8 +17,25 @@ public class EVTranslatorDbHelper extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_SENTENCE_TABLE);
+        db.execSQL(SQL_CREATE_FOLDER_TABLE);
+        db.execSQL(SQL_CREATE_FAVORITE_TABLE);
+    }
+
+    @Override
+    public SQLiteDatabase getReadableDatabase() {
+        return super.getReadableDatabase();
+    }
+
+    @Override
+    public SQLiteDatabase getWritableDatabase() {
+        return super.getWritableDatabase();
     }
 
     @Override
@@ -37,6 +55,18 @@ public class EVTranslatorDbHelper extends SQLiteOpenHelper {
             EVTranslatorContract.Sentence._ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
             EVTranslatorContract.Sentence.COLUMN_ENG_NAME + TEXT_TYPE + " NOT NULL UNIQUE" + COMMA_SEP +
             EVTranslatorContract.Sentence.COLUMN_VIE_NAME + TEXT_TYPE + " NOT NULL" +
+            ")";
+    private static final String SQL_CREATE_FOLDER_TABLE = "CREATE TABLE " + EVTranslatorFavorite.TABLE_NAME + " (" +
+            EVTranslatorFavorite.ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+            EVTranslatorFavorite.BODY + TEXT_TYPE + " NOT NULL" + COMMA_SEP +
+            EVTranslatorFavorite.DATECREATE + " datetime" + " NOT NULL" +
+            ")";
+    private static final String SQL_CREATE_FAVORITE_TABLE = "CREATE TABLE " + EVTranslatorFavorite.TABLE_NAME_FAVORITE + " (" +
+            EVTranslatorFavorite.ID + " INTEGER PRIMARY KEY AUTOINCREMENT" + COMMA_SEP +
+            EVTranslatorFavorite.English + TEXT_TYPE + " NOT NULL" + COMMA_SEP +
+            EVTranslatorFavorite.VN + TEXT_TYPE + " NOT NULL" + COMMA_SEP +
+            EVTranslatorFavorite.IDFolder + " INTEGER" + COMMA_SEP +
+            "FOREIGN KEY(" + EVTranslatorFavorite.IDFolder + ") REFERENCES " + EVTranslatorFavorite.TABLE_NAME + "("+ EVTranslatorFavorite.ID + ")"+
             ")";
     private static final String SQL_DROP_SENTENCE_TABLE =
             "DROP TABLE IF EXISTS " + EVTranslatorContract.Sentence.TABLE_NAME;

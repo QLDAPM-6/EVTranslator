@@ -39,6 +39,7 @@ import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
 import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
 import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
 import com.example.qldapm.evtranslator.services.HistoryService;
+import com.example.qldapm.evtranslator.services.Managerfavorite;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -78,8 +79,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
     public  InputStream file_enparser_chunking;
     DB_EV db_ev;
 
-
     SentenceRepository sentenceRepository;
+    ImageButton imagefavorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +98,16 @@ public class HomeTranslateActivity extends AppCompatActivity {
         resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
         ImageButton copyButton = (ImageButton)translatedText.findViewById(R.id.copy);
 
+        imagefavorite = (ImageButton)findViewById(R.id.ngoisao);
+        imagefavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
+                Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
+                Intent intent = new Intent(getApplication(), FolderActivity.class);
+                startActivity(intent);
+            }
+        });
         recyclerView.setHasFixedSize(true);
 
         layoutManager = new LinearLayoutManager(this);
@@ -200,6 +211,14 @@ public class HomeTranslateActivity extends AppCompatActivity {
                 Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
             }
         });
+        //favorite
+        if(Managerfavorite.getIntance().showFavorite)
+        {
+            input.setText(Managerfavorite.getIntance().currentfavorite.get_name());
+            resultBox.setText(Managerfavorite.getIntance().currentfavorite.getThuoctinhbosung());
+            recyclerView.setVisibility(View.GONE);
+            translatedText.setVisibility(View.VISIBLE);
+        }
 
         InitializeNLP();
     }
@@ -395,20 +414,13 @@ public class HomeTranslateActivity extends AppCompatActivity {
         }
 
         @Override
-        public HistoryAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public HistoryAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
             // create a new view
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.history_item_in_list, parent, false);
             // set the view's size, margins, paddings and layout parameters
             //...
-            final ImageButton favoriteIcon = (ImageButton) v.findViewById(R.id.favorite_image_button);
-            favoriteIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //TODO Enable favorite icon here
-                    Log.d(TAG, "Replace favorite icon image");
-                }
-            });
+
 
             ViewHolder vh = new ViewHolder(v);
             return vh;
@@ -432,6 +444,18 @@ public class HomeTranslateActivity extends AppCompatActivity {
                     resultBox.setText(vietnameseSentence);
                     recyclerView.setVisibility(View.GONE);
                     translatedText.setVisibility(View.VISIBLE);
+                }
+            });
+            final ImageButton favoriteIcon = (ImageButton) viewHolder.listView.findViewById(R.id.favorite_image_button);
+            favoriteIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //TODO Enable favorite icon here
+                    Log.d(TAG, "Replace favorite icon image");
+                    Managerfavorite.getIntance().currentfavorite.set_name(englishSentence);
+                    Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(vietnameseSentence);
+                    Intent intent = new Intent(getApplication(), FolderActivity.class);
+                    startActivity(intent);
                 }
             });
         }

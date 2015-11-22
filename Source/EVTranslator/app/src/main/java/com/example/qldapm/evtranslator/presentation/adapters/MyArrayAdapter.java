@@ -42,7 +42,7 @@ public class MyArrayAdapter extends ArrayAdapter<absFile> {
             TextView Title = (TextView)convertView.findViewById(R.id.lbl_title_favorite);
             Title.setText(danhhSach.get(position).get_name());
             TextView date = (TextView)convertView.findViewById(R.id.lbl_favorite_date);
-            date.setText(danhhSach.get(position).getNgaySave());
+            date.setText(danhhSach.get(position).getThuoctinhbosung());
             if(type == "Favorite")
             {
                 ImageView image = (ImageView)convertView.findViewById(R.id.btn_image);

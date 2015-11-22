@@ -4,6 +4,7 @@ package com.example.qldapm.evtranslator.models;
  * Created by vanty on 11/1/2015.
  */
 public abstract class absFile {
+    private String id = "";
     private String _name;
     public String get_name()
     {
@@ -13,14 +14,24 @@ public abstract class absFile {
     {
         _name = name;
     }
-    public String getNgaySave() {
-        return ngaySave;
-    }
 
-    public void setNgaySave(String ngaySave) {
-        this.ngaySave = ngaySave;
-    }
 
-    private String ngaySave;
+    private String Thuoctinhbosung;
     public abstract String getType();
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getThuoctinhbosung() {
+        return Thuoctinhbosung;
+    }
+
+    public void setThuoctinhbosung(String thuoctinhbosung) {
+        Thuoctinhbosung = thuoctinhbosung;
+    }
 }

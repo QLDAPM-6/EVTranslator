@@ -17,11 +17,13 @@ import com.example.qldapm.evtranslator.R;
  */
 public class AddFolder extends DialogFragment {
     private String nameString = "";
+    private Long id_testview;
     private int _thaotac;
-    public AddFolder(String name)
+    public AddFolder(String name,Long id)
     {
         nameString = name;
         _thaotac = 1;
+        id_testview = id;
     }
     public AddFolder()
     {_thaotac = 0;}
@@ -55,6 +57,10 @@ public class AddFolder extends DialogFragment {
     public interface NoticeDialogListener {
         public void onDialogPositiveClick(DialogFragment dialog,String value,int thaotac);
         public void onDialogNegativeClick(DialogFragment dialog,String value,int thaotac);
+    }
+    public Long GetID()
+    {
+        return id_testview;
     }
     NoticeDialogListener mListener;
     @Override
