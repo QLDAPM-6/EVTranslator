@@ -38,8 +38,10 @@ import com.example.qldapm.evtranslator.models.repository.SentenceRepository;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
 import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
 import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
+import com.example.qldapm.evtranslator.services.GlobalVariables;
 import com.example.qldapm.evtranslator.services.HistoryService;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
+import com.example.qldapm.evtranslator.services.TranslatorService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,12 +74,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
     private ImageButton clearButton;
     private Button translateButton;
     private TextView resultBox;
+    private GlobalVariables global;
 
-    //public  InputStream file_en_token;
-    public  InputStream file_en_ner_person;
-    //public
-    public  InputStream file_enparser_chunking;
-    DB_EV db_ev;
 
     SentenceRepository sentenceRepository;
     ImageButton imagefavorite;
@@ -220,19 +218,9 @@ public class HomeTranslateActivity extends AppCompatActivity {
             translatedText.setVisibility(View.VISIBLE);
         }
 
-        InitializeNLP();
+        global = GlobalVariables.getInstance();
     }
 
-    private void InitializeNLP() {
-
-        //file_en_token = getResources().openRawResource(R.raw.entoken);
-        file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
-        //file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
-        file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
-        db_ev = new DB_EV(this);
-
-
-    }
 
     private void Translating(){
 
@@ -243,16 +231,8 @@ public class HomeTranslateActivity extends AppCompatActivity {
             return;
         }
 
-        ArrayList<String> posTag_list = POSTags(inputText);
-        //String[] abc = getTokenizer(inputText);
-        ArrayList<OpenNLPWord> openNLPWords_list =assignStringtoOpenNLPWord(posTag_list);
-
-        String vnSentence= "";
-        for(OpenNLPWord item : openNLPWords_list){
-            item.randomVnMeaing();
-            vnSentence+= item.getVnMeaning()+ " " ;
-            //+item.getVnMeaning() + "|POS_" + item.getPosTag()
-        }
+        TranslatorService translatorService = new TranslatorService(this);
+        String vnSentence = translatorService.toVietnamese(inputText);
         historyAdapter.AddItem(inputText, vnSentence);
         Translated(vnSentence);
         HideSoftKey();
@@ -327,72 +307,6 @@ public class HomeTranslateActivity extends AppCompatActivity {
         return null;
     }
 
-    //assign pos for all words in the enSentence
-    public ArrayList<String> POSTags(String enSentence){
-        ArrayList<String> str = new ArrayList<String>();
-        InputStream file_en_pos_maxent = null;
-        try{
-            file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
-            POSModel model = new POSModel(file_en_pos_maxent);
-            PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
-            POSTaggerME tagger = new POSTaggerME(model);
-            ObjectStream<String> lineStream = new PlainTextByLineStream(
-                    new StringReader(enSentence));
-            perfMon.start();
-            String line;
-
-            while ((line = lineStream.read()) != null) {
-                String whitespaceTokenizerLine[] = WhitespaceTokenizer.INSTANCE
-                        .tokenize(line);
-                String[] tags = tagger.tag(whitespaceTokenizerLine);
-                POSSample sample = new POSSample(whitespaceTokenizerLine, tags);
-
-                String[] splitStr = sample.toString().split(" ");
-                for(String postag : splitStr){
-                    str.add(postag);
-                }
-
-                perfMon.incrementCounter();
-            }
-            perfMon.stopAndPrintFinalResult();
-            file_en_pos_maxent.close();
-        }catch (Exception ex){
-            Toast.makeText(getApplication(),ex.getMessage(),Toast.LENGTH_LONG).show();
-        }finally {
-            if (file_en_pos_maxent != null) {
-                try {
-                    file_en_pos_maxent.close();
-                }
-                catch (IOException e) {
-                    // Not an issue, training already finished.
-                    // The exception should be logged and investigated
-                    // if part of a production system.
-                    e.printStackTrace();
-                }
-            }
-        }
-        return str;
-    }
-
-    //split the POSTag with syntax = word_postag into OpenNLPWord
-    public OpenNLPWord postagToWord(String postag){
-        String[] splitStr = postag.split("_");
-        OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1],  splitStr[0]);
-        db_ev.addMeaming_OpenNLPWord(res);
-        return res;
-    }
-
-    // example.
-    public ArrayList<OpenNLPWord> assignStringtoOpenNLPWord(ArrayList<String> postags){
-        ArrayList<OpenNLPWord> res = new ArrayList<>();
-        for (String temp : postags) {
-            res.add(postagToWord(temp));
-        }
-        //DB_EV db_ev = new DB_EV(this);
-        //db_ev.getOpenNLWord(words.get(0));
-        //Toast.makeText(getApplication(),words.get(0).getVnMeaning(),Toast.LENGTH_LONG).show();
-        return res;
-    }
 
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
