@@ -169,7 +169,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
                     Log.v(LOG_TAG, sentence.getEnglishSentence() + " - " + sentence.getVietnameseSentence());
                 }
 
-                //Translating();
+                Translating();
             }
         });
 
@@ -225,7 +225,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
         }
 
         ArrayList<String> posTag_list = POSTags(inputText);
-        String[] abc = getTokenizer(inputText);
+        //String[] abc = getTokenizer(inputText);
         ArrayList<OpenNLPWord> openNLPWords_list =assignStringtoOpenNLPWord(posTag_list);
 
         String vnSentence= "";

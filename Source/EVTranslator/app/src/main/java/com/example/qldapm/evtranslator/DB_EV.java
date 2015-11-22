@@ -45,6 +45,9 @@ public class DB_EV extends SQLiteOpenHelper{
     }
 
     public void getAllELMeaning(WORD word, ArrayList<ELMEANING> allelmeaning){
+        if(word == null) {
+            return;
+        }
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursorELMEANING = db.query(ELMEANING.TABLE_NAME, new String[]{ELMEANING.COL_ID,
                         ELMEANING.COL_ID_WORD, ELMEANING.COL_MEANING, ELMEANING.COL_TYPE}, ELMEANING.COL_ID_WORD + "=?",
@@ -74,6 +77,15 @@ public class DB_EV extends SQLiteOpenHelper{
 
     public void addMeaming_OpenNLPWord(OpenNLPWord openNLPWord) {
         WORD word = getWord(openNLPWord.getWord());
+        if(word == null){
+            openNLPWord.orignalWordForVBDMore();
+            word = getWord(openNLPWord.getWord());
+        }
+        if(word == null)
+        {
+            openNLPWord.originalWordForVBD();
+            word = getWord(openNLPWord.getWord());
+        }
         if(word != null){
             ArrayList<ELMEANING> allElMeaning = new ArrayList<>();
             getAllELMeaning(word,allElMeaning);
@@ -92,7 +104,7 @@ public class DB_EV extends SQLiteOpenHelper{
                        }, POSTAG.COL_INIT + "=?",
                 new String[] { postag }, null, null, null, null);
         if (cursorPOSTAG.moveToFirst()) {
-            //cursorPOSTAG.moveToFirst();
+
             meaning = cursorPOSTAG.getString(0);
             String[] types = meaning.split("_");
             boolean flag = false;
