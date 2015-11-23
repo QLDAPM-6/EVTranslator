@@ -4,6 +4,7 @@ import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
@@ -34,9 +35,9 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_folder);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         //get danh sach folder
         Managerfavorite.getIntance().Setdatabase(new EVTranslatorDbHelper((this)));
         Managerfavorite.getIntance().dbprocess = new EVTranslatorDbFavorite();
@@ -149,5 +150,14 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
         adapter.remove(t);
         Managerfavorite.getIntance().dbprocess.Removefolder(t.get_name());
         //remove database here
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

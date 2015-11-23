@@ -18,12 +18,10 @@
         </activity>
         <activity
             android:name=".presentation.activities.FolderActivity"
-            android:label="@string/title_activity_folder"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_folder"></activity>
         <activity
             android:name=".presentation.activities.FavoriteActivity"
-            android:label="@string/title_activity_folder"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_folder"></activity>
         <activity
             android:name=".presentation.activities.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar">
