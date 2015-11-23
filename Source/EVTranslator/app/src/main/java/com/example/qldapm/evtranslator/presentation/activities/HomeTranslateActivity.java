@@ -60,12 +60,14 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
     private LinearLayout translatedTextComponent;       // component lưu kết quả dịch (màu xanh phía dưới sau khi dịch)
     private CardView inputHolder;                       // view chứa phần input chính
     private ImageButton clearButton;                    // Dấu X trên input chính khi có chữ
+    private ImageButton favoriteButton;                 // Nút lưu vào mục yêu thích
     private Button translateButton;                     // Nút dịch
     private TextView resultBox;                         // TextView chứa từ tiếng Việt sau khi dịch
     private GlobalVariables global;                     // Các biến global (singleton)
+    private boolean flagTranslated;                     // cờ cho thấy có đang ở trạng thái đã dịch hay không
 
     SentenceRepository sentenceRepository;
-    ImageButton favoriteButton;                         // Nút lưu vào mục yêu thích
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,7 +190,6 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 startActivity(intent);
                 break;
             case R.id.btn_clear:
-                input.setText("");
                 ChangeUIBack();
                 HideSoftKey();
                 break;
@@ -198,6 +199,14 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if(flagTranslated) {
+            ChangeUIBack();
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     // Ẩn bàn phím ảo
     private void HideSoftKey(){
@@ -208,13 +217,16 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     // Chuyển UI lại lúc chưa dịch
     private void ChangeUIBack() {
+        input.setText("");
         translatedTextComponent.setVisibility(View.GONE);
         historyListHolder.setVisibility(View.VISIBLE);
         clearButton.setVisibility(View.GONE);
+        flagTranslated = false;
     }
 
     // Chuyển UI lúc đã dịch
     private void Translated(String outputText) {
+        flagTranslated = true;
         resultBox.setText(outputText);
         historyListHolder.setVisibility(View.GONE);
         translatedTextComponent.setVisibility(View.VISIBLE);
