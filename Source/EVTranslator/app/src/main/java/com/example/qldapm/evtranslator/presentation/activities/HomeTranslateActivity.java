@@ -29,10 +29,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.qldapm.evtranslator.DB_EV;
-import com.example.qldapm.evtranslator.OpenNLPWord;
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
 import com.example.qldapm.evtranslator.models.entity.Sentence;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepository;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
@@ -45,40 +42,30 @@ import com.example.qldapm.evtranslator.services.TranslatorService;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import opennlp.tools.cmdline.PerformanceMonitor;
-import opennlp.tools.postag.POSModel;
-import opennlp.tools.postag.POSSample;
-import opennlp.tools.postag.POSTaggerME;
 import opennlp.tools.tokenize.Tokenizer;
 import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
-import opennlp.tools.tokenize.WhitespaceTokenizer;
-import opennlp.tools.util.ObjectStream;
-import opennlp.tools.util.PlainTextByLineStream;
 
 
-public class HomeTranslateActivity extends AppCompatActivity {
+public class HomeTranslateActivity extends AppCompatActivity implements View.OnClickListener {
 
     private final String LOG_TAG = HomeTranslateActivity.class.getSimpleName();
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private HistoryAdapter historyAdapter;
-    private EditText input;
-    private LinearLayout translatedText;
-    private CardView cardview;
-    private ImageButton clearButton;
-    private Button translateButton;
-    private TextView resultBox;
-    private GlobalVariables global;
-
+    private RecyclerView historyListHolder;             // view dùng để chứa History List
+    private RecyclerView.LayoutManager layoutManager;   // quản lý layout cho historyListHolder
+    private HistoryAdapter historyListAdapter;          // adapter cho History List
+    private EditText input;                             // input chính điền từ cần dịch
+    private LinearLayout translatedTextComponent;       // component lưu kết quả dịch (màu xanh phía dưới sau khi dịch)
+    private CardView inputHolder;                       // view chứa phần input chính
+    private ImageButton clearButton;                    // Dấu X trên input chính khi có chữ
+    private Button translateButton;                     // Nút dịch
+    private TextView resultBox;                         // TextView chứa từ tiếng Việt sau khi dịch
+    private GlobalVariables global;                     // Các biến global (singleton)
 
     SentenceRepository sentenceRepository;
-    ImageButton imagefavorite;
+    ImageButton favoriteButton;                         // Nút lưu vào mục yêu thích
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,38 +74,37 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
         sentenceRepository = new SentenceRepositoryImpl(getApplicationContext());
 
-        cardview = (CardView) findViewById(R.id.cardview);
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        // Gán view vào các biến
+        inputHolder = (CardView) findViewById(R.id.cardview);
+        historyListHolder = (RecyclerView) findViewById(R.id.my_recycler_view);
         clearButton = (ImageButton) findViewById(R.id.btn_clear);
-        translatedText = (LinearLayout)findViewById(R.id.translated_text);
+        translatedTextComponent = (LinearLayout)findViewById(R.id.translated_text);
         input = (EditText) findViewById(R.id.touch_to_type_area);
         translateButton = (Button) findViewById(R.id.btn_translate);
-        resultBox = (TextView)translatedText.findViewById(R.id.textViewVi);
-        ImageButton copyButton = (ImageButton)translatedText.findViewById(R.id.copy);
+        resultBox = (TextView) translatedTextComponent.findViewById(R.id.textViewVi);
+        ImageButton copyButton = (ImageButton) translatedTextComponent.findViewById(R.id.copy);
+        favoriteButton = (ImageButton)findViewById(R.id.ngoisao);
+        final View homeRootView = findViewById(R.id.home_translate_root);
 
-        imagefavorite = (ImageButton)findViewById(R.id.ngoisao);
-        imagefavorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
-                Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
-                Intent intent = new Intent(getApplication(), FolderActivity.class);
-                startActivity(intent);
-            }
-        });
-        recyclerView.setHasFixedSize(true);
+        // Cài đặt sự kiện click cho các button
+        favoriteButton.setOnClickListener(this);
+        clearButton.setOnClickListener(this);
+        translateButton.setOnClickListener(this);
+        copyButton.setOnClickListener(this);
 
+        // Cài đặt historyListHolder
         layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
+        historyListHolder.setLayoutManager(layoutManager);
+        historyListHolder.setHasFixedSize(true);
 
-        historyAdapter = new HistoryAdapter(this, new HistoryService(sentenceRepository));
-        recyclerView.setAdapter(historyAdapter);
+        historyListAdapter = new HistoryAdapter(this, new HistoryService(sentenceRepository));
+        historyListHolder.setAdapter(historyListAdapter);
 
-        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(historyAdapter);
+        ItemTouchHelper.Callback callback = new ItemTouchHelperCallback(historyListAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
-        touchHelper.attachToRecyclerView(recyclerView);
+        touchHelper.attachToRecyclerView(historyListHolder);
 
-
+        // Cài đặt sự kiện khi nhấn done (enter) trên bàn phím ảo
         input.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -131,6 +117,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
             }
         });
 
+        // Cài đặt nút clear để hiện khi có text trong input chính
         input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -142,7 +129,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if(s.length() > 0) {
+                if (s.length() > 0) {
                     clearButton.setVisibility(View.VISIBLE);
                 } else {
                     clearButton.setVisibility(View.GONE);
@@ -150,129 +137,120 @@ public class HomeTranslateActivity extends AppCompatActivity {
             }
         });
 
-        //Clear button
 
-        clearButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                input.setText("");
-                ChangeBack();
-                HideSoftKey();
-            }
-        });
+        //final EVTranslatorDbHelper dbHelper = new EVTranslatorDbHelper(getApplicationContext());
 
-
-        final EVTranslatorDbHelper dbHelper = new EVTranslatorDbHelper(getApplicationContext());
-
-        translateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                new HistoryService(sentenceRepository).addToHistory(
-                        input.getText().toString(), "Tieng viet"
-                );
-
-                List<Sentence> sentences = new HistoryService(sentenceRepository).getAllSentences();
-
-                for (Sentence sentence : sentences) {
-                    Log.v(LOG_TAG, sentence.getEnglishSentence() + " - " + sentence.getVietnameseSentence());
-                }
-
-                Translating();
-            }
-        });
-
-
-        final View homeRootView = findViewById(R.id.home_translate_root);
+        // Kỹ thuật để xét coi bàn phím ảo có đang hiện hay ko, nếu có thực hiện dàn phần input hết màn hình
         homeRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 int heightDiff = homeRootView.getRootView().getHeight() - homeRootView.getHeight();
                 if (heightDiff > 1000) {
-                    cardview.setLayoutParams(new LinearLayout.LayoutParams(
+                    inputHolder.setLayoutParams(new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT, 4.0f));
                 } else {
-                    cardview.setLayoutParams(new LinearLayout.LayoutParams(
+                    inputHolder.setLayoutParams(new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             0, 4.0f));
                 }
             }
         });
 
-        copyButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("evtranslator", resultBox.getText().toString());
-                clipboard.setPrimaryClip(clip);
-                Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
-            }
-        });
         //favorite
         if(Managerfavorite.getIntance().showFavorite)
         {
             input.setText(Managerfavorite.getIntance().currentfavorite.get_name());
             resultBox.setText(Managerfavorite.getIntance().currentfavorite.getThuoctinhbosung());
-            recyclerView.setVisibility(View.GONE);
-            translatedText.setVisibility(View.VISIBLE);
+            historyListHolder.setVisibility(View.GONE);
+            translatedTextComponent.setVisibility(View.VISIBLE);
         }
 
+        // Lấy biến toàn cục
         global = GlobalVariables.getInstance();
     }
 
 
-    private void Translating(){
-
-        String inputText = input.getText().toString();
-        if (inputText.isEmpty()) {
-            ChangeBack();
-            HideSoftKey();
-            return;
+    // Cài đặt sự kiện on click cho các button
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.copy:
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("evtranslator", resultBox.getText().toString());
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.ngoisao:
+                Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
+                Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
+                Intent intent = new Intent(getApplication(), FolderActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.btn_clear:
+                input.setText("");
+                ChangeUIBack();
+                HideSoftKey();
+                break;
+            case R.id.btn_translate:
+                Translating();
         }
 
-        TranslatorService translatorService = new TranslatorService(this);
-        String vnSentence = translatorService.toVietnamese(inputText);
-        historyAdapter.AddItem(inputText, vnSentence);
-        Translated(vnSentence);
-        HideSoftKey();
     }
 
+
+    // Ẩn bàn phím ảo
     private void HideSoftKey(){
         InputMethodManager imm;
         imm = (InputMethodManager)this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
     }
 
-    private void ChangeBack() {
-        translatedText.setVisibility(View.GONE);
-        recyclerView.setVisibility(View.VISIBLE);
+    // Chuyển UI lại lúc chưa dịch
+    private void ChangeUIBack() {
+        translatedTextComponent.setVisibility(View.GONE);
+        historyListHolder.setVisibility(View.VISIBLE);
         clearButton.setVisibility(View.GONE);
     }
 
+    // Chuyển UI lúc đã dịch
     private void Translated(String outputText) {
         resultBox.setText(outputText);
+        historyListHolder.setVisibility(View.GONE);
+        translatedTextComponent.setVisibility(View.VISIBLE);
+        HideSoftKey();
+    }
 
-        recyclerView.setVisibility(View.GONE);
-        translatedText.setVisibility(View.VISIBLE);
+
+    // Hàm dịch chính
+    private void Translating(){
+
+        String inputText = input.getText().toString();
+        if (inputText.isEmpty()) {
+            ChangeUIBack();
+            HideSoftKey();
+            return;
+        }
+
+        TranslatorService translatorService = new TranslatorService(this);
+        String vnSentence = translatorService.toVietnamese(inputText);
+        historyListAdapter.AddItem(inputText, vnSentence);
+        new HistoryService(sentenceRepository).addToHistory(inputText, vnSentence);
+        Translated(vnSentence);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_favorite) {
+        if (id == R.id.action_favorite) { // Chạy khi người dùng tap vào favorite ở menu góc phải
             Intent intent = new Intent(this, FolderActivity.class);
             startActivity(intent);
         }
@@ -308,18 +286,13 @@ public class HomeTranslateActivity extends AppCompatActivity {
     }
 
 
+    // Adapter cho History List (đặt inner class vì để tiện thay đổi UI)
     private class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> implements ItemTouchHelperAdapter {
 
         private final String TAG = HistoryAdapter.class.getSimpleName();
-
         private Context context;
-
         private HistoryService historyService;
-
         private List<Sentence> sentences;
-        //private HashMap<String, String> historyContainerMap = new HashMap<String, String>();
-
-        //private List<String> englishSentencesInHistory = new ArrayList<String>();
 
         public HistoryAdapter(Context context, HistoryService historyService) {
             this.context = context;
@@ -327,39 +300,44 @@ public class HomeTranslateActivity extends AppCompatActivity {
             sentences = historyService.getAllSentences();
         }
 
+        // Tạo View history item mới
         @Override
         public HistoryAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
-            // create a new view
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.history_item_in_list, parent, false);
-            // set the view's size, margins, paddings and layout parameters
-            //...
-
 
             ViewHolder vh = new ViewHolder(v);
             return vh;
 
         }
 
+
+        // Gắn dữ liệu vào view history item
         @Override
         public void onBindViewHolder(HistoryAdapter.ViewHolder viewHolder, int position) {
-            TextView englishContent = (TextView) viewHolder.listView.findViewById(R.id.history_english_textView);
             final String englishSentence = sentences.get(position).getEnglishSentence();
             final String vietnameseSentence = sentences.get(position).getVietnameseSentence();
+
+            // Gán dữ liệu dòng tiếng Anh
+            TextView englishContent = (TextView) viewHolder.listView.findViewById(R.id.history_english_textView);
             englishContent.setText(englishSentence);
 
+            // Gán dữ liệu dòng tiếng Việt
             TextView vietnameseContent = (TextView) viewHolder.listView.findViewById(R.id.history_vietnamese_textView);
             vietnameseContent.setText(vietnameseSentence);
 
+            // Cài đặt phương thức click của view history item để load lại kết quả
             viewHolder.listView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     input.setText(englishSentence);
                     resultBox.setText(vietnameseSentence);
-                    recyclerView.setVisibility(View.GONE);
-                    translatedText.setVisibility(View.VISIBLE);
+                    historyListHolder.setVisibility(View.GONE);
+                    translatedTextComponent.setVisibility(View.VISIBLE);
                 }
             });
+
+            // Cái đặt nút thêm vào mục yêu thích
             final ImageButton favoriteIcon = (ImageButton) viewHolder.listView.findViewById(R.id.favorite_image_button);
             favoriteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -380,6 +358,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
             return sentences.size();
         }
 
+        // Xóa History khi swipe qua trái hoặc phải
         @Override
         public void onItemDismiss(int position) {
             historyService.deleteSentenceById(sentences.get(position).getId());
@@ -387,6 +366,7 @@ public class HomeTranslateActivity extends AppCompatActivity {
             notifyItemRemoved(position);
         }
 
+        // Phương thức thêm History Item
         public void AddItem(String eng, String viet) {
             historyService.addToHistory(eng, viet);
             sentences.clear();
