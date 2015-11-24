@@ -32,6 +32,9 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
 
     ListView hienthifavorite;
     MyArrayAdapter adapter;
+    int FAVORITE_DETAIL_REQUEST_CODE = 0;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +71,7 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
                     Managerfavorite.getIntance().currentFolder = temp;
                     // goi favorite Activity
                     Intent intent = new Intent(getApplication(), FavoriteActivity.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, FAVORITE_DETAIL_REQUEST_CODE);
                 }
 
             }
@@ -77,6 +80,24 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
         adapter = new MyArrayAdapter(this,R.layout.listlayour,Managerfavorite.getIntance().ListFolder);
         hienthifavorite.setAdapter(adapter);
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == FAVORITE_DETAIL_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String englishSentence = data.getStringExtra("english");
+                String vietnameseSentence = data.getStringExtra("vietnam");
+                Intent intent = new Intent();
+                intent.putExtra("english", englishSentence);
+                intent.putExtra("vietnam", vietnameseSentence);
+                setResult(RESULT_OK, intent);
+                this.finish();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     // event dialogue click oke
     @Override
     public void onDialogNegativeClick(DialogFragment dialog, String value,int thaotac) {
@@ -163,5 +184,11 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 }

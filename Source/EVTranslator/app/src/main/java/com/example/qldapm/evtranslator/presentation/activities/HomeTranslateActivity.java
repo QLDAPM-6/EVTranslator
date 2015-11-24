@@ -77,6 +77,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
     private TextView resultBox;                         // TextView chứa từ tiếng Việt sau khi dịch
     private GlobalVariables global;                     // Các biến global (singleton)
     private boolean flagTranslated;                     // cờ cho thấy có đang ở trạng thái đã dịch hay không
+    private int FAVORITE_REQUEST_CODE = 0;              // request code cho favorite activity
 
     SentenceRepository sentenceRepository;
 
@@ -296,7 +297,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     @Override
     public void onBackPressed() {
-        if(flagTranslated) {
+        if(flagTranslated == true) {
             ChangeUIBack();
         } else {
             super.onBackPressed();
@@ -359,10 +360,26 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
         if (id == R.id.action_favorite) { // Chạy khi người dùng tap vào favorite ở menu góc phải
             Intent intent = new Intent(this, FolderActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, FAVORITE_REQUEST_CODE);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == FAVORITE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String englishSentence = data.getStringExtra("english");
+                String vietnameseSentence = data.getStringExtra("vietnam");
+                input.setText(englishSentence);
+                resultBox.setText(vietnameseSentence);
+                historyListHolder.setVisibility(View.GONE);
+                translatedTextComponent.setVisibility(View.VISIBLE);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     public String[] getTokenizer(String sent) {
@@ -441,6 +458,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                     resultBox.setText(vietnameseSentence);
                     historyListHolder.setVisibility(View.GONE);
                     translatedTextComponent.setVisibility(View.VISIBLE);
+                    flagTranslated = true;
                 }
             });
 
