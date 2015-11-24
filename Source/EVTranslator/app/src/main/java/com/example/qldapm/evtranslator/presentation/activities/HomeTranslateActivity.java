@@ -1,8 +1,11 @@
 package com.example.qldapm.evtranslator.presentation.activities;
 
+import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -30,10 +35,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.models.Folder;
+import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
+import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
 import com.example.qldapm.evtranslator.models.entity.Sentence;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepository;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
 import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
+import com.example.qldapm.evtranslator.presentation.fragments.AddFolder;
 import com.example.qldapm.evtranslator.presentation.helpers.ItemTouchHelperCallback;
 import com.example.qldapm.evtranslator.services.GlobalVariables;
 import com.example.qldapm.evtranslator.services.HistoryService;
@@ -42,6 +52,7 @@ import com.example.qldapm.evtranslator.services.TranslatorService;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import opennlp.tools.tokenize.Tokenizer;
@@ -49,7 +60,7 @@ import opennlp.tools.tokenize.TokenizerME;
 import opennlp.tools.tokenize.TokenizerModel;
 
 
-public class HomeTranslateActivity extends AppCompatActivity implements View.OnClickListener {
+public class HomeTranslateActivity extends AppCompatActivity implements View.OnClickListener, AddFolder.NoticeDialogListener {
 
     private final String LOG_TAG = HomeTranslateActivity.class.getSimpleName();
 
@@ -170,10 +181,17 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
         // Lấy biến toàn cục
         global = GlobalVariables.getInstance();
+        //
+        //get danh sach folder
+        Managerfavorite.getIntance().Setdatabase(new EVTranslatorDbHelper((this)));
+        Managerfavorite.getIntance().dbprocess = new EVTranslatorDbFavorite();
+        Managerfavorite.getIntance().ListFolder = Managerfavorite.getIntance().dbprocess.getFolder();
     }
 
 
     // Cài đặt sự kiện on click cho các button
+    private ArrayAdapter<String> adapter;
+    private AlertDialog dialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -186,8 +204,45 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
             case R.id.ngoisao:
                 Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
                 Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
-                Intent intent = new Intent(getApplication(), FolderActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getApplication(), FolderActivity.class);
+                //startActivity(intent);
+                List<String> option = new ArrayList<>();
+                List<absFile>dsFolder = Managerfavorite.getIntance().ListFolder;
+                if(dsFolder.size() == 0)
+                {
+                    option.add("Please add favorite folder");
+                }
+                else
+                {
+                    option.add("Add Folder");
+                    for(absFile temp : Managerfavorite.getIntance().ListFolder)
+                    {
+                        option.add(temp.get_name());
+                    }
+                }
+
+                adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, option);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Save favorite");
+                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO Auto-generated method stub
+                    Toast.makeText(getApplication(),adapter.getItem(which),Toast.LENGTH_LONG).show();
+                    absFile current = Managerfavorite.getIntance().ListFolder.get(which -1);
+                    if(which == 0)
+                    {
+                        DialogFragment add = new AddFolder();
+                        add.show(getFragmentManager(),"ThemmoiFolder");
+                    }
+                    // luu favorite
+                    Managerfavorite.getIntance().currentFolder = (Folder)current;
+                    Managerfavorite.getIntance().currentfavorite.setID_folder(Managerfavorite.getIntance().currentFolder.getId());
+                    Managerfavorite.getIntance().dbprocess.Themfavorite(Managerfavorite.getIntance().currentfavorite);
+                    Toast.makeText(getApplication(),"Save Success",Toast.LENGTH_LONG).show();
+                }
+                });
+                dialog = builder.create();
+                dialog.show();
                 break;
             case R.id.btn_clear:
                 ChangeUIBack();
@@ -197,6 +252,34 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 Translating();
         }
 
+    }
+    // event dialogue click oke
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String value, int thaotac) {
+        absFile temp = new Folder();
+        temp.set_name(value);
+        long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, temp.getThuoctinhbosung());
+        temp.setId(String.valueOf(id));
+        Managerfavorite.getIntance().addChild(temp);// Them folder
+        adapter.add(value);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog, String value, int thaotac) {
+
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 
     @Override
