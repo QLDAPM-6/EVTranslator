@@ -3,4 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context="com.example.qldapm.evtranslator.presentation.activities.HomeTranslateActivity">
     <item android:id="@+id/action_favorite" android:title="@string/action_favorite"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_sms_translate" android:title="@string/action_sms"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>

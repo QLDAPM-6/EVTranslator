@@ -1,6 +1,4 @@
-package com.example.qldapm.evtranslator.models;
-
-import com.example.qldapm.evtranslator.models.absFile;
+package com.example.qldapm.evtranslator.models.entity;
 
 /**
  * Created by vanty on 10/23/2015.

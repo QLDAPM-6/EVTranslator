@@ -1,23 +1,18 @@
 package com.example.qldapm.evtranslator.presentation.activities;
 
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.example.qldapm.evtranslator.models.FavoriteObject;
-import com.example.qldapm.evtranslator.models.absFile;
-import com.example.qldapm.evtranslator.presentation.fragments.AddFolder;
+import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.R;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
 import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;

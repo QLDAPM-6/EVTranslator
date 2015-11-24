@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 
 import java.util.List;
 

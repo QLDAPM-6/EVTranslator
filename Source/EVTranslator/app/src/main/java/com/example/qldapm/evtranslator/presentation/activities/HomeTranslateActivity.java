@@ -78,6 +78,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
     private GlobalVariables global;                     // Các biến global (singleton)
     private boolean flagTranslated;                     // cờ cho thấy có đang ở trạng thái đã dịch hay không
     private int FAVORITE_REQUEST_CODE = 0;              // request code cho favorite activity
+    private int SMS_TRANSLATION_REQUEST_CODE = 1;       // request code cho list message activity
 
     SentenceRepository sentenceRepository;
 
@@ -361,6 +362,9 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
         if (id == R.id.action_favorite) { // Chạy khi người dùng tap vào favorite ở menu góc phải
             Intent intent = new Intent(this, FolderActivity.class);
             startActivityForResult(intent, FAVORITE_REQUEST_CODE);
+        } else if (id == R.id.action_sms_translate) { // Chạy khi người dùng tap vào SMS Tranlate ở menu góc phải
+            Intent intent = new Intent(this, ListMessagesActivity.class);
+            startActivityForResult(intent, SMS_TRANSLATION_REQUEST_CODE);
         }
 
         return super.onOptionsItemSelected(item);
@@ -377,6 +381,12 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 resultBox.setText(vietnameseSentence);
                 historyListHolder.setVisibility(View.GONE);
                 translatedTextComponent.setVisibility(View.VISIBLE);
+            }
+        } else if (requestCode == SMS_TRANSLATION_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String englishSentence = data.getStringExtra("english");
+                input.setText(englishSentence);
+                Translating();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

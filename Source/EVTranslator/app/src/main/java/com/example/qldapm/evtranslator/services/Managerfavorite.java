@@ -1,8 +1,8 @@
 package com.example.qldapm.evtranslator.services;
 
-import com.example.qldapm.evtranslator.models.FavoriteObject;
-import com.example.qldapm.evtranslator.models.Folder;
-import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
+import com.example.qldapm.evtranslator.models.entity.Folder;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
 

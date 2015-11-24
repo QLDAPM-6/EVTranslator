@@ -1,4 +1,4 @@
-package com.example.qldapm.evtranslator.models;
+package com.example.qldapm.evtranslator.models.entity;
 
 /**
  * Created by vanty on 11/1/2015.

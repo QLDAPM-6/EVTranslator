@@ -3,6 +3,7 @@
     package="com.example.qldapm.evtranslator">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:allowBackup="true"
@@ -16,6 +17,9 @@
             android:theme="@style/AppTheme"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
+        <activity
+            android:name=".presentation.activities.ListMessagesActivity"
+            android:label="SMS Translation"></activity>
         <activity
             android:name=".presentation.activities.FolderActivity"
             android:label="@string/title_activity_folder"></activity>

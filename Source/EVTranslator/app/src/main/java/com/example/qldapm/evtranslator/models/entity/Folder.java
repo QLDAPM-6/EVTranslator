@@ -1,6 +1,4 @@
-package com.example.qldapm.evtranslator.models;
-
-import com.example.qldapm.evtranslator.models.absFile;
+package com.example.qldapm.evtranslator.models.entity;
 
 import java.util.ArrayList;
 import java.util.List;

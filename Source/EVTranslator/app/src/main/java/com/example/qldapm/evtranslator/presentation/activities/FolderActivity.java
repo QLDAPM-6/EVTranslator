@@ -6,26 +6,23 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
 import com.example.qldapm.evtranslator.presentation.fragments.AddFolder;
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.models.FavoriteObject;
-import com.example.qldapm.evtranslator.models.Folder;
-import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
+import com.example.qldapm.evtranslator.models.entity.Folder;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
 import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class FolderActivity extends AppCompatActivity implements AddFolder.NoticeDialogListener {

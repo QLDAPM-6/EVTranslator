@@ -5,12 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.example.qldapm.evtranslator.models.FavoriteObject;
-import com.example.qldapm.evtranslator.models.Folder;
-import com.example.qldapm.evtranslator.models.absFile;
+import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
+import com.example.qldapm.evtranslator.models.entity.Folder;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
