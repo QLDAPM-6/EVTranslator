@@ -16,11 +16,11 @@ import java.util.List;
 /**
  * Created by vanty on 10/23/2015.
  */
-public class MyArrayAdapter extends ArrayAdapter<absFile> {
+public class FolderFavoriteArrayAdapter extends ArrayAdapter<absFile> {
     public List<absFile>danhhSach;
     public int id_Layout;
     public Activity context;
-    public MyArrayAdapter(Activity app,int id,List<absFile>danhsach)
+    public FolderFavoriteArrayAdapter(Activity app, int id, List<absFile> danhsach)
     {
         super(app, id, danhsach);
         danhhSach = danhsach;
@@ -43,15 +43,9 @@ public class MyArrayAdapter extends ArrayAdapter<absFile> {
             Title.setText(danhhSach.get(position).get_name());
             TextView date = (TextView)convertView.findViewById(R.id.lbl_favorite_date);
             date.setText(danhhSach.get(position).getThuoctinhbosung());
-            if(type == "Favorite")
-            {
-                ImageView image = (ImageView)convertView.findViewById(R.id.btn_image);
-                image.setImageResource(R.mipmap.ngoisao);
-            }
-            else
-            {
-                ImageView image = (ImageView)convertView.findViewById(R.id.btn_image);
-                image.setImageResource(R.mipmap.folder);
+            if(type == "Folder") {
+                date.setVisibility(View.GONE);
+                Title.setTextSize(22);
             }
         }
 

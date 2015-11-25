@@ -15,13 +15,13 @@ import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
 import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.R;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
-import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;
+import com.example.qldapm.evtranslator.presentation.adapters.FolderFavoriteArrayAdapter;
 
-public class FavoriteActivity extends AppCompatActivity {
+public class FavoriteActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
 
     ListView hienthifavorite;
-    MyArrayAdapter adapter;
+    FolderFavoriteArrayAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,20 +34,9 @@ public class FavoriteActivity extends AppCompatActivity {
 
 
         hienthifavorite = (ListView)findViewById(R.id.liv_danhsach);
-        hienthifavorite.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //On click goi ben kia.
-                FavoriteObject current = (FavoriteObject)parent.getItemAtPosition(position);
-                Managerfavorite.getIntance().showFavorite = true;
-                Managerfavorite.getIntance().currentfavorite = current;
-                Intent intent = new Intent(getApplication(),HomeTranslateActivity.class);
-                startActivity(intent);
-
-            }
-        });
+        hienthifavorite.setOnItemClickListener(this);
         registerForContextMenu(hienthifavorite);
-        adapter = new MyArrayAdapter(this,R.layout.listlayour, Managerfavorite.getIntance().Listchid);
+        adapter = new FolderFavoriteArrayAdapter(this,R.layout.list_favorite_layout, Managerfavorite.getIntance().Listchid);
         hienthifavorite.setAdapter(adapter);
     }
 
@@ -87,5 +76,17 @@ public class FavoriteActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        FavoriteObject current = (FavoriteObject)parent.getItemAtPosition(position);
+        String englishSentence = current.get_name();
+        String vietnameseSentence = current.getThuoctinhbosung();
+        Intent intent = new Intent();
+        intent.putExtra("english", englishSentence);
+        intent.putExtra("vietnam", vietnameseSentence);
+        setResult(RESULT_OK, intent);
+        this.finish();
     }
 }

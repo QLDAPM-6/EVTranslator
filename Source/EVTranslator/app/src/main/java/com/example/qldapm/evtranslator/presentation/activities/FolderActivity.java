@@ -21,14 +21,14 @@ import com.example.qldapm.evtranslator.models.entity.FavoriteObject;
 import com.example.qldapm.evtranslator.models.entity.Folder;
 import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
-import com.example.qldapm.evtranslator.presentation.adapters.MyArrayAdapter;
+import com.example.qldapm.evtranslator.presentation.adapters.FolderFavoriteArrayAdapter;
 
 import java.util.Calendar;
 
 public class FolderActivity extends AppCompatActivity implements AddFolder.NoticeDialogListener {
 
     ListView hienthifavorite;
-    MyArrayAdapter adapter;
+    FolderFavoriteArrayAdapter adapter;
     int FAVORITE_DETAIL_REQUEST_CODE = 0;
 
 
@@ -74,7 +74,7 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
             }
         });
         registerForContextMenu(hienthifavorite);
-        adapter = new MyArrayAdapter(this,R.layout.listlayour,Managerfavorite.getIntance().ListFolder);
+        adapter = new FolderFavoriteArrayAdapter(this,R.layout.list_favorite_layout,Managerfavorite.getIntance().ListFolder);
         hienthifavorite.setAdapter(adapter);
     }
 

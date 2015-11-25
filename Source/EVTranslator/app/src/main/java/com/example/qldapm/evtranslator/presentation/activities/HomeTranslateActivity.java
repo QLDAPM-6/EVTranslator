@@ -204,7 +204,8 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ngoisao:
-                DisplayFavoriteSave();
+                DisplayFavoriteSave(input.getText().toString(), resultBox.getText().toString());
+
                 break;
             case R.id.btn_clear:
                 ChangeUIBack();
@@ -216,38 +217,40 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     }
 
-    private void DisplayFavoriteSave() {
-        Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
-        Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
+    private void DisplayFavoriteSave(String english, String vietnamese) {
+        Managerfavorite.getIntance().currentfavorite.set_name(english);
+        Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(vietnamese);
         //Intent intent = new Intent(getApplication(), FolderActivity.class);
         //startActivity(intent);
         List<String> option = new ArrayList<>();
         List<absFile>dsFolder = Managerfavorite.getIntance().ListFolder;
+
         if(dsFolder.size() == 0)
         {
-            option.add("Please add favorite folder");
+            option.add("Please add a favorite folder");
         }
         else
         {
-            option.add("Add Folder");
             for(absFile temp : Managerfavorite.getIntance().ListFolder)
             {
                 option.add(temp.get_name());
             }
+            option.add("Add New Folder");
         }
 
         adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, option);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Save favorite");
+        builder.setTitle("Add To Favorite");
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                absFile current = Managerfavorite.getIntance().ListFolder.get(which -1);
-                if(which == 0)
+                if(which == Managerfavorite.getIntance().ListFolder.size())
                 {
                     DialogFragment add = new AddFolder();
                     add.show(getFragmentManager(),"ThemmoiFolder");
+                    return;
                 }
                 // luu favorite
+                absFile current = Managerfavorite.getIntance().ListFolder.get(which);
                 Managerfavorite.getIntance().currentFolder = (Folder)current;
                 Managerfavorite.getIntance().currentfavorite.setID_folder(Managerfavorite.getIntance().currentFolder.getId());
                 Managerfavorite.getIntance().dbprocess.Themfavorite(Managerfavorite.getIntance().currentfavorite);
@@ -467,7 +470,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
             favoriteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DisplayFavoriteSave();
+                    DisplayFavoriteSave(englishSentence, vietnameseSentence);
                 }
             });
         }
