@@ -14,7 +14,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -36,11 +35,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.qldapm.evtranslator.R;
-import com.example.qldapm.evtranslator.models.Folder;
-import com.example.qldapm.evtranslator.models.absFile;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
+import com.example.qldapm.evtranslator.models.entity.Folder;
 import com.example.qldapm.evtranslator.models.entity.Sentence;
+import com.example.qldapm.evtranslator.models.entity.absFile;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepository;
 import com.example.qldapm.evtranslator.models.repository.SentenceRepositoryImpl;
 import com.example.qldapm.evtranslator.presentation.adapters.ItemTouchHelperAdapter;
@@ -194,8 +193,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     // Cài đặt sự kiện on click cho các button
     private ArrayAdapter<String> adapter;
-    private AlertDialog dialogadd;
-    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -206,58 +204,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 Toast.makeText(HomeTranslateActivity.this, "Text Copied", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.ngoisao:
-
-                //Intent intent = new Intent(getApplication(), FolderActivity.class);
-                //startActivity(intent);
-                List<String> option = new ArrayList<>();
-                List<absFile>dsFolder = Managerfavorite.getIntance().ListFolder;
-                if(dsFolder.size() == 0)
-                {
-                    option.add("Please add favorite folder");
-                }
-                else
-                {
-                    option.add("Add Folder");
-                    for(absFile temp : Managerfavorite.getIntance().ListFolder)
-                    {
-                        option.add(temp.get_name());
-                    }
-                }
-
-                adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, option);
-                builder = new AlertDialog.Builder(this);
-                builder.setTitle(Html.fromHtml("<font color='#FF7F27'>Save Favorite</font>"));
-                builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
-                        Toast.makeText(getApplication(), adapter.getItem(which), Toast.LENGTH_LONG).show();
-
-                        if (which == 0) {
-                            DialogFragment add = new AddFolder();
-                            add.show(getFragmentManager(), "ThemmoiFolder");
-                        } else {
-                            // lay folder hien tai
-                            absFile current = Managerfavorite.getIntance().ListFolder.get(which - 1);
-                            // tao favorite current
-                            Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
-                            Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
-                            // set current folder
-                            Managerfavorite.getIntance().currentFolder = (Folder) current;
-                            //set id folder cho favorite
-                            Managerfavorite.getIntance().currentfavorite.setID_folder(Managerfavorite.getIntance().currentFolder.getId());
-                            // them favorite vao db
-                            Managerfavorite.getIntance().AddFavorite(Managerfavorite.getIntance().currentfavorite);
-                            Toast.makeText(getApplication(), "Save Success", Toast.LENGTH_LONG).show();
-                        }
-                        // luu favorite
-
-                    }
-                });
-                dialogadd = builder.create();
-                dialogadd.setIcon(R.mipmap.folder);
-                dialogadd.show();
-
-
+                DisplayFavoriteSave();
                 break;
             case R.id.btn_clear:
                 ChangeUIBack();
@@ -268,16 +215,59 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
         }
 
     }
+
+    private void DisplayFavoriteSave() {
+        Managerfavorite.getIntance().currentfavorite.set_name(input.getText().toString());
+        Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(resultBox.getText().toString());
+        //Intent intent = new Intent(getApplication(), FolderActivity.class);
+        //startActivity(intent);
+        List<String> option = new ArrayList<>();
+        List<absFile>dsFolder = Managerfavorite.getIntance().ListFolder;
+        if(dsFolder.size() == 0)
+        {
+            option.add("Please add favorite folder");
+        }
+        else
+        {
+            option.add("Add Folder");
+            for(absFile temp : Managerfavorite.getIntance().ListFolder)
+            {
+                option.add(temp.get_name());
+            }
+        }
+
+        adapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item, option);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Save favorite");
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                absFile current = Managerfavorite.getIntance().ListFolder.get(which -1);
+                if(which == 0)
+                {
+                    DialogFragment add = new AddFolder();
+                    add.show(getFragmentManager(),"ThemmoiFolder");
+                }
+                // luu favorite
+                Managerfavorite.getIntance().currentFolder = (Folder)current;
+                Managerfavorite.getIntance().currentfavorite.setID_folder(Managerfavorite.getIntance().currentFolder.getId());
+                Managerfavorite.getIntance().dbprocess.Themfavorite(Managerfavorite.getIntance().currentfavorite);
+                Toast.makeText(getApplication(),"Added to folder " + adapter.getItem(which),Toast.LENGTH_LONG).show();
+            }
+        });
+        dialog = builder.create();
+        dialog.show();
+    }
     // event dialogue click oke
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog, String value, int thaotac) {
-        // them folder
-        Managerfavorite.getIntance().Addfolder(value);
-        // them vao adapter
+        absFile temp = new Folder();
+        temp.set_name(value);
+        long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, temp.getThuoctinhbosung());
+        temp.setId(String.valueOf(id));
+        Managerfavorite.getIntance().addChild(temp);// Them folder
         adapter.add(value);
         adapter.notifyDataSetChanged();
-        dialogadd.show();
     }
 
     @Override
@@ -477,12 +467,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
             favoriteIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //TODO Enable favorite icon here
-                    Log.d(TAG, "Replace favorite icon image");
-                    Managerfavorite.getIntance().currentfavorite.set_name(englishSentence);
-                    Managerfavorite.getIntance().currentfavorite.setThuoctinhbosung(vietnameseSentence);
-                    Intent intent = new Intent(getApplication(), FolderActivity.class);
-                    startActivity(intent);
+                    DisplayFavoriteSave();
                 }
             });
         }
