@@ -266,7 +266,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
     public void onDialogPositiveClick(DialogFragment dialog, String value, int thaotac) {
         absFile temp = new Folder();
         temp.set_name(value);
-        long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, temp.getThuoctinhbosung());
+        long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, " ");
         temp.setId(String.valueOf(id));
         Managerfavorite.getIntance().addChild(temp);// Them folder
         adapter.add(value);
