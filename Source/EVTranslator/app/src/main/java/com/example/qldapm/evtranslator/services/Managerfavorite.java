@@ -23,7 +23,7 @@ public class Managerfavorite {
     // folder hien tai
     public Folder currentFolder;
     // database
-    private EVTranslatorDbHelper db;
+    private static EVTranslatorDbHelper db;
     //file xu li database
     public EVTranslatorDbFavorite dbprocess;
     //
@@ -55,10 +55,25 @@ public class Managerfavorite {
     //database
     public void Setdatabase(EVTranslatorDbHelper database)
     {
-        db = database;
+        if(db == null)
+            db = database;
     }
     public EVTranslatorDbHelper Getdatabase()
     {
         return db;
+    }
+
+    public long Addfolder(String value)
+    {
+        absFile temp = new Folder();
+        temp.set_name(value);
+        long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value," ");
+        temp.setId(String.valueOf(id));
+        Managerfavorite.getIntance().addChild(temp);// Them folder
+        return id;
+    }
+    public boolean AddFavorite(FavoriteObject favorite)
+    {
+        return Managerfavorite.getIntance().dbprocess.Themfavorite(favorite);
     }
 }

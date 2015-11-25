@@ -37,15 +37,7 @@ public class FavoriteActivity extends AppCompatActivity {
 
         Managerfavorite.getIntance().Listchid = Managerfavorite.getIntance().dbprocess.getFavorite(Managerfavorite.getIntance().currentFolder.getId());
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // them favorite va folder
-                Managerfavorite.getIntance().currentfavorite.setID_folder(Managerfavorite.getIntance().currentFolder.getId());
-                Themfavorite();
-            }
-        });
+
         hienthifavorite = (ListView)findViewById(R.id.liv_danhsach);
         hienthifavorite.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -63,12 +55,7 @@ public class FavoriteActivity extends AppCompatActivity {
         adapter = new MyArrayAdapter(this,R.layout.listlayour, Managerfavorite.getIntance().Listchid);
         hienthifavorite.setAdapter(adapter);
     }
-    public void Themfavorite()
-    {
-        Managerfavorite.getIntance().dbprocess.Themfavorite(Managerfavorite.getIntance().currentfavorite);
-        adapter.add(Managerfavorite.getIntance().currentfavorite);
-        adapter.notifyDataSetChanged();
-    }
+
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {

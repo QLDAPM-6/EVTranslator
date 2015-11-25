@@ -64,9 +64,9 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
                 else
                 {
                     Folder temp = (Folder)parent.getItemAtPosition(position);
-                    // thu nghiem
+                    // set current folder
                     Managerfavorite.getIntance().currentFolder = temp;
-                    // goi favorite
+                    // goi favorite Activity
                     Intent intent = new Intent(getApplication(), FavoriteActivity.class);
                     startActivity(intent);
                 }
@@ -88,17 +88,21 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
         // add new here
         if(thaotac == 0) {
             absFile temp = GeneFolder(value);
-
+            temp.setThuoctinhbosung(" ");
            long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, temp.getThuoctinhbosung());
+            // set ID folder for temp
             temp.setId(String.valueOf(id));
+            // add current list.
             Managerfavorite.getIntance().addChild(temp);// Them folder
             adapter.notifyDataSetChanged();
         }
-        else {
+        else {// rename folder
+
             AddFolder dialogtemp = (AddFolder)dialog;
             int index = dialogtemp.GetID().intValue();
             absFile tam = adapter.getItem(index);
             tam.set_name(value);
+            // create folder
             absFile folder = GeneFolder(value);
             Managerfavorite.getIntance().dbprocess.Renamefolder(tam.getId(),folder);
             adapter.notifyDataSetChanged();
