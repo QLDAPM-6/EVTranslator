@@ -11,11 +11,20 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import opennlp.tools.cmdline.PerformanceMonitor;
+import opennlp.tools.cmdline.parser.ParserTool;
+import opennlp.tools.parser.Parse;
+import opennlp.tools.parser.Parser;
+import opennlp.tools.parser.ParserFactory;
+import opennlp.tools.parser.ParserModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSSample;
 import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.tokenize.Tokenizer;
+import opennlp.tools.tokenize.TokenizerME;
+import opennlp.tools.tokenize.TokenizerModel;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.ObjectStream;
 import opennlp.tools.util.PlainTextByLineStream;
@@ -35,24 +44,55 @@ public class TranslatorService {
 
     public String toVietnamese(String englishSentence) {
 
+        //String[] str = getTokenizer(englishSentence);;
         ArrayList<String> posTag_list = POSTags(englishSentence);
+        //BuildParserChunking();
         ArrayList<OpenNLPWord> openNLPWords_list = assignStringtoOpenNLPWord(posTag_list);
 
-        String vnSentence= "";
-        for(OpenNLPWord item : openNLPWords_list){
-            item.randomVnMeaing();
+        Sentence sent = new Sentence();
+        sent.setOpenNLPWords_list(openNLPWords_list);
+        sent.arrageNegativeForm();
+
+        String vnSentence= sent.printVnMeaning();
+        /*for(OpenNLPWord item : openNLPWords_list){
+           item.randomVnMeaing();
             vnSentence+= item.getVnMeaning()+ " " ;
-            //+item.getVnMeaning() + "|POS_" + item.getPosTag()
-        }
+           // +item.getVnMeaning() + "|POS_" + item.getPosTag()
+        }*/
+
 
         return vnSentence;
     }
 
+    public String[] getTokenizer(String sent) {
+        try {
+            String tokens[];
+            TokenizerModel model = new TokenizerModel(global.getFile_entoken());
+            Tokenizer tokenizer = new TokenizerME(model);
+            tokens = tokenizer.tokenize(sent);
+            return tokens;
+        } catch (Exception e) {
+            //log the exception
+        }finally {
+            if (global.getFile_entoken() != null) {
+                try {
+                    global.getFile_entoken().close();
+                }
+                catch (IOException e) {
+                    // Not an issue, training already finished.
+                    // The exception should be logged and investigated
+                    // if part of a production system.
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
 
     //assign pos for all words in the enSentence
     public ArrayList<String> POSTags(String enSentence){
         ArrayList<String> str = new ArrayList<String>();
-        InputStream file_en_pos_maxent = null;
+
         try{
             POSModel model = global.getModel();
             PerformanceMonitor perfMon = new PerformanceMonitor(System.err, "sent");
@@ -113,5 +153,32 @@ public class TranslatorService {
         //db_ev.getOpenNLWord(words.get(0));
         //Toast.makeText(getApplication(),words.get(0).getVnMeaning(),Toast.LENGTH_LONG).show();
         return res;
+    }
+
+    public void BuildParserChunking(){
+
+        try {
+            //modelIn  = new FileInputStream("en-parser-chunking.bin");
+            ParserModel model = new ParserModel(global.getFile_enparser_chunking());
+            Parser parser = ParserFactory.create(model);
+            String sentence = "The quick brown fox jumps over the lazy dog .";
+            Parse topParses[] = ParserTool.parseLine(sentence, parser, 1);
+            for(Parse postag : topParses){
+                postag.show();
+
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+            if (global.getFile_enparser_chunking() != null) {
+                try {
+                    global.getFile_enparser_chunking().close();
+                }
+                catch (IOException e) {
+                }
+            }
+        }
     }
 }

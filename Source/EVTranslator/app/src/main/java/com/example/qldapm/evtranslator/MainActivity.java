@@ -61,9 +61,9 @@ public class MainActivity extends AppCompatActivity  {
 
         // init
         file_en_token = getResources().openRawResource(R.raw.entoken);
-        file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
+        //file_en_ner_person = getResources().openRawResource(R.raw.ennerperson);
         file_en_pos_maxent = getResources().openRawResource(R.raw.en_pos_maxent);
-        file_enparser_chunking = getResources().openRawResource(R.raw.enparserchunking);
+        //file_enparser_chunking = getResources().openRawResource(R.raw.en_parser_chunking);
         db_ev = new DB_EV(this);
 
         String enSentence = "I have a pen";

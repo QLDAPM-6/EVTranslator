@@ -15,6 +15,7 @@ public class GlobalVariables {
     private InputStream file_en_ner_person;
     private InputStream file_enparser_chunking;
     private InputStream file_en_pos_maxent;
+    private InputStream file_entoken;
     private POSModel model;
     private DB_EV db_ev;
 
@@ -61,6 +62,13 @@ public class GlobalVariables {
 
     public void setFile_en_pos_maxent(InputStream file_en_pos_maxent) {
         this.file_en_pos_maxent = file_en_pos_maxent;
+    }
+
+    public void setFile_entoken(InputStream file_entoken){
+        this.file_entoken = file_entoken;
+    }
+    public InputStream getFile_entoken(){
+        return this.file_entoken;
     }
 
     public POSModel getModel() {

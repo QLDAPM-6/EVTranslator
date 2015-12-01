@@ -1,0 +1,2 @@
+configurations.create("default")
+artifacts.add("default", file('stanford-corenlp-3.4.1-models.jar'))

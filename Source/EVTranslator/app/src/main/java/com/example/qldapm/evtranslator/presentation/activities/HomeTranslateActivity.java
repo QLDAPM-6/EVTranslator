@@ -494,7 +494,6 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
             historyService.addToHistory(eng, viet);
             sentences.clear();
             sentences.addAll(historyService.getAllSentences());
-
             notifyDataSetChanged();
 
         }

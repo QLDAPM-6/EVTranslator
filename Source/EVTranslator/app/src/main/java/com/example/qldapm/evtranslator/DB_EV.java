@@ -14,7 +14,6 @@ import opennlp.tools.util.ext.ExtensionNotLoadedException;
  * Created by Tung on 08/11/2015.
  */
 public class DB_EV extends SQLiteOpenHelper{
-
     public static final String DB_NAME  = "en_vn.db";
 
     public DB_EV(Context context){
@@ -73,19 +72,48 @@ public class DB_EV extends SQLiteOpenHelper{
 
     }
 
-
-
     public void addMeaming_OpenNLPWord(OpenNLPWord openNLPWord) {
+
         WORD word = getWord(openNLPWord.getWord());
-        if(word == null){
-            openNLPWord.orignalWordForVBDMore();
-            word = getWord(openNLPWord.getWord());
+        if(openNLPWord.getPosTag().equals("VBD") || openNLPWord.getPosTag().equals("VBN") ){
+            if(word == null){
+                openNLPWord.originalWordForVBD();
+                word = getWord(openNLPWord.getWord());
+            }
+            if(word == null)
+            {
+                openNLPWord.orignalWordForVBD_e();
+                word = getWord(openNLPWord.getWord());
+            }
+        }else{
+            if(openNLPWord.getPosTag().equals("NNS")) {
+                if (word == null) {
+                    openNLPWord.originalWordForNNS_S();
+                    word = getWord(openNLPWord.getWord());
+                }
+                if (word == null) {
+                    openNLPWord.originalWordForNNS_ES();
+                    word = getWord(openNLPWord.getWord());
+                }
+                if (word == null) {
+                    openNLPWord.orignalWordForNNS_VES_IES();
+                    word = getWord(openNLPWord.getWord());
+                }
+            }else{
+                if(openNLPWord.getPosTag().equals("VBZ")){
+                    if (word == null) {
+                        openNLPWord.originalWordForNNS_S();
+                        word = getWord(openNLPWord.getWord());
+                    }
+                    if (word == null) {
+                        openNLPWord.originalWordForNNS_ES();
+                        word = getWord(openNLPWord.getWord());
+                    }
+                }
+            }
+
         }
-        if(word == null)
-        {
-            openNLPWord.originalWordForVBD();
-            word = getWord(openNLPWord.getWord());
-        }
+
         if(word != null){
             ArrayList<ELMEANING> allElMeaning = new ArrayList<>();
             getAllELMeaning(word,allElMeaning);
@@ -94,7 +122,6 @@ public class DB_EV extends SQLiteOpenHelper{
         }
 
     }
-
 
     private String chooseProperMeaning(ArrayList<ELMEANING> list, String postag ){
         String res = "";
@@ -125,7 +152,6 @@ public class DB_EV extends SQLiteOpenHelper{
         }
         return res;
     }
-
 }
 
 class WORD {
@@ -141,7 +167,7 @@ class WORD {
     public static final String COL_WORD = "Word";
 }
 
- class ELMEANING {
+class ELMEANING {
 
     public static final String TABLE_NAME = "ELMEANING";
     public static final String COL_ID = "ID";
