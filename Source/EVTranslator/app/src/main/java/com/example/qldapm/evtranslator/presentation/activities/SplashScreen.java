@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.example.qldapm.evtranslator.DB_EV;
 import com.example.qldapm.evtranslator.R;
+import com.example.qldapm.evtranslator.models.database.DataHelper;
 import com.example.qldapm.evtranslator.services.GlobalVariables;
 
 import java.io.FileInputStream;
@@ -28,10 +29,9 @@ import opennlp.tools.postag.POSModel;
 
 public class SplashScreen extends Activity {
     private final static String PCG_MODEL = "englishpcfgser.gz";
+    public static String PACKAGE_NAME;
 
     private  TokenizerFactory<CoreLabel> tokenizerFactory = PTBTokenizer.factory(new CoreLabelTokenFactory(), "invertible=true");
-
-
 
 
     public Tree parse(String str) {
@@ -74,6 +74,9 @@ public class SplashScreen extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PACKAGE_NAME = getApplicationContext().getPackageName();
+
         setContentView(R.layout.activity_splash_screen);
         String str = "The handsome boy wants to talk something to you";
 
@@ -135,6 +138,12 @@ int c =10;
         @Override
         protected Void doInBackground(Void... arg0) {
             InitializeNLP();
+            DataHelper dataHelper = new DataHelper(getApplicationContext());
+            try {
+                dataHelper.createDataBase();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             return null;
         }
 
