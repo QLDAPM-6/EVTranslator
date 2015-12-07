@@ -11,6 +11,11 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/opennlp-tools-1.6.0" />
+            <option value="$PROJECT_DIR$/opennlp-uima-1.6.0" />
+            <option value="$PROJECT_DIR$/stanford-corenlp-3.4.1" />
+            <option value="$PROJECT_DIR$/stanford-corenlp-3.4.1-models" />
+            <option value="$PROJECT_DIR$/stanford-corenlp-3.4.1-sources" />
           </set>
         </option>
       </GradleProjectSettings>
