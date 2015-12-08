@@ -41,8 +41,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.1.0'
     compile 'com.android.support:design:23.1.0'
     compile 'com.android.support:cardview-v7:23.1.+'
-    compile project(':opennlp-tools-1.6.0')
-    compile project(':opennlp-uima-1.6.0')
     compile project(':stanford-corenlp-3.4.1')
     compile project(':stanford-corenlp-3.4.1-sources')
     compile project(':stanford-corenlp-3.4.1-models')

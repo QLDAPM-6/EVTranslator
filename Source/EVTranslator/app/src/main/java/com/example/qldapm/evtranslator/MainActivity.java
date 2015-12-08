@@ -1,32 +1,21 @@
-package com.example.qldapm.evtranslator;
+/*package com.example.qldapm.evtranslator;
 
 
 import android.os.Bundle;
-
-import android.provider.UserDictionary;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.io.InputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.List;
 
 
 import opennlp.tools.cmdline.PerformanceMonitor;
-import opennlp.tools.cmdline.parser.ParserTool;
-import opennlp.tools.parser.Parse;
-import opennlp.tools.parser.Parser;
-import opennlp.tools.parser.ParserFactory;
-import opennlp.tools.parser.ParserModel;
 import opennlp.tools.postag.POSModel;
 import opennlp.tools.postag.POSSample;
 import opennlp.tools.postag.POSTaggerME;
@@ -69,11 +58,11 @@ public class MainActivity extends AppCompatActivity  {
         String enSentence = "I have a pen";
         ArrayList<String> posTag_list = POSTags(enSentence);
         String[] abcd = getTokenizer(enSentence);
-        ArrayList<OpenNLPWord> openNLPWords_list =assignStringtoOpenNLPWord(posTag_list);
-        //sent.setText(openNLPWords_list.get(0).getVnMeaning());
-        //sent.setText(openNLPWords_list.get(0).getVnMeaning() + " " + openNLPWords_list.get(0).getVnMeaning() + " ")
+        ArrayList<EWord> words_list =assignStringtoOpenNLPWord(posTag_list);
+        //sent.setText(words_list.get(0).getVnMeaning());
+        //sent.setText(words_list.get(0).getVnMeaning() + " " + words_list.get(0).getVnMeaning() + " ")
         String vnSentence= "";
-        for(OpenNLPWord item : openNLPWords_list){
+        for(EWord item : words_list){
             item.randomVnMeaing();
             vnSentence+= item.getVnMeaning() + " ";
         }
@@ -93,7 +82,7 @@ public class MainActivity extends AppCompatActivity  {
         Managerfavorite.getIntands().addChild(temp);
         Intent intent = new Intent(this,folder.class);
         startActivity(intent);
-*/
+
     }
 
     @Override
@@ -163,17 +152,18 @@ public class MainActivity extends AppCompatActivity  {
         return str;
     }
 
-    //split the POSTag with syntax = word_postag into OpenNLPWord
-    public OpenNLPWord postagToWord(String postag){
-        String[] splitStr = postag.split("_");
-        OpenNLPWord res = new OpenNLPWord(splitStr[0], splitStr[1], "");
+    //split the POSTag with syntax = word_postag into EWord
+    public EWord postagToWord(String postag){
+        /*String[] splitStr = postag.split("_");
+        EWord res = new EWord(splitStr[0], splitStr[1], "");
         db_ev.addMeaming_OpenNLPWord(res);
         return res;
+        return null;
     }
 
     // example.
-    public ArrayList<OpenNLPWord> assignStringtoOpenNLPWord(ArrayList<String> postags){
-        ArrayList<OpenNLPWord> res = new ArrayList<>();
+    public ArrayList<EWord> assignStringtoOpenNLPWord(ArrayList<String> postags){
+        ArrayList<EWord> res = new ArrayList<>();
         for (String temp : postags) {
             res.add(postagToWord(temp));
         }
@@ -182,24 +172,4 @@ public class MainActivity extends AppCompatActivity  {
         //Toast.makeText(getApplication(),words.get(0).getVnMeaning(),Toast.LENGTH_LONG).show();
         return res;
     }
-
-    //public OpenNLPWord
-    /*
-    public  void Parse() {
-        try{
-            ParserModel model = new ParserModel(file_enparser_chunking);
-            Parser parser = ParserFactory.create(model);
-            String sentence = "Programcreek is a very huge and useful website.";
-            Parse topParses[] = ParserTool.parseLine(sentence, parser, 1);
-            for (Parse p : topParses)
-                p.show();
-
-        }catch (Exception exc){
-            int a = 10;
-        }
-
-	 * (TOP (S (NP (NN Programcreek) ) (VP (VBZ is) (NP (DT a) (ADJP (RB
-	 * very) (JJ huge) (CC and) (JJ useful) ) ) ) (. website.) ) )
-
-    }*/
-}
+}*/

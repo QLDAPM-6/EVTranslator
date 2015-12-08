@@ -101,9 +101,7 @@
     <orderEntry type="library" exported="" name="design-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
-    <orderEntry type="module" module-name="opennlp-tools-1.6.0" exported="" />
     <orderEntry type="module" module-name="stanford-corenlp-3.4.1-sources" exported="" />
-    <orderEntry type="module" module-name="opennlp-uima-1.6.0" exported="" />
     <orderEntry type="module" module-name="stanford-corenlp-3.4.1-models" exported="" />
     <orderEntry type="module" module-name="stanford-corenlp-3.4.1" exported="" />
   </component>

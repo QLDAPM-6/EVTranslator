@@ -1,1 +1,1 @@
-include ':app', ':opennlp-tools-1.6.0', 'opennlp-uima-1.6.0', ':stanford-corenlp-3.4.1', ':stanford-corenlp-3.4.1-sources', ':stanford-corenlp-3.4.1-models'
+include ':app', ':stanford-corenlp-3.4.1', ':stanford-corenlp-3.4.1-sources', ':stanford-corenlp-3.4.1-models'

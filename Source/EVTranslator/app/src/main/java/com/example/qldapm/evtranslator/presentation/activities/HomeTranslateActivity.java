@@ -33,7 +33,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.qldapm.evtranslator.R;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
@@ -49,15 +48,10 @@ import com.example.qldapm.evtranslator.services.GlobalVariables;
 import com.example.qldapm.evtranslator.services.HistoryService;
 import com.example.qldapm.evtranslator.services.Managerfavorite;
 import com.example.qldapm.evtranslator.services.TranslatorService;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import opennlp.tools.tokenize.Tokenizer;
-import opennlp.tools.tokenize.TokenizerME;
-import opennlp.tools.tokenize.TokenizerModel;
+
 
 
 public class HomeTranslateActivity extends AppCompatActivity implements View.OnClickListener, AddFolder.NoticeDialogListener {
@@ -385,32 +379,6 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public String[] getTokenizer(String sent) {
-        InputStream file_en_token = null;
-        try {
-            String tokens[];
-            file_en_token = getResources().openRawResource(R.raw.entoken);
-            TokenizerModel model = new TokenizerModel(file_en_token);
-            Tokenizer tokenizer = new TokenizerME(model);
-            tokens = tokenizer.tokenize(sent);
-            return tokens;
-        } catch (Exception e) {
-            //log the exception
-        }finally {
-            if (file_en_token != null) {
-                try {
-                    file_en_token.close();
-                }
-                catch (IOException e) {
-                    // Not an issue, training already finished.
-                    // The exception should be logged and investigated
-                    // if part of a production system.
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
 
 
     // Adapter cho History List (đặt inner class vì để tiện thay đổi UI)

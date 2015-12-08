@@ -6,9 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import opennlp.tools.util.ext.ExtensionNotLoadedException;
 
 /**
  * Created by Tung on 08/11/2015.
@@ -30,10 +27,15 @@ public class DB_EV extends SQLiteOpenHelper{
     }
 
     public WORD getWord(String enterword){
+
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursorWord = db.query(WORD.TABLE_NAME, new String[]{WORD.COL_ID,
+
+        Cursor cursorWord = db.rawQuery("SELECT " + WORD.COL_ID + ","+
+                WORD.COL_WORD + " FROM "+WORD.TABLE_NAME+" WHERE LOWER("+WORD.COL_WORD+") = ?", new String[] {enterword.toLowerCase()});
+
+        /*Cursor cursorWord = db.query(WORD.TABLE_NAME, new String[]{WORD.COL_ID,
                         WORD.COL_WORD}, WORD.COL_WORD + "=?",
-                new String[]{enterword.toLowerCase()}, null, null, null, null);
+                new String[]{enterword.toLowerCase()}, null, null, null, null);*/
         if(cursorWord.moveToFirst()) {
             int id = Integer.parseInt(cursorWord.getString(0));
             String word = cursorWord.getString(1);
@@ -56,7 +58,7 @@ public class DB_EV extends SQLiteOpenHelper{
 
                 //int col_id_postag = Integer.parseInt(cursorELMEANING.getString(2));
                 String meaning = cursorELMEANING.getString(2);
-                if(meaning.toLowerCase().startsWith("xem $") == true){
+                if(meaning.toLowerCase().startsWith("xem $") == true || meaning.toLowerCase().startsWith("như $") == true){
                     String newWord = meaning.toLowerCase().substring(5);
                     WORD recursiveWord = getWord(newWord);
                     getAllELMeaning(recursiveWord,allelmeaning);
@@ -66,48 +68,49 @@ public class DB_EV extends SQLiteOpenHelper{
                     String type = cursorELMEANING.getString(3);
                     ELMEANING temp = new ELMEANING(id,meaning,col_id_word,0,type );
                     allelmeaning.add(temp);
+
                 }
             } while (cursorELMEANING.moveToNext());
         }
 
     }
 
-    public void addMeaming_OpenNLPWord(OpenNLPWord openNLPWord) {
+    public void addMeaming_EWord(EWord openNLPEWord) {
 
-        WORD word = getWord(openNLPWord.getWord());
-        if(openNLPWord.getPosTag().equals("VBD") || openNLPWord.getPosTag().equals("VBN") ){
+        WORD word = getWord(openNLPEWord.getWord());
+        if(openNLPEWord.getPosTag().equals("VBD") || openNLPEWord.getPosTag().equals("VBN") ){
             if(word == null){
-                openNLPWord.originalWordForVBD();
-                word = getWord(openNLPWord.getWord());
+                openNLPEWord.originalWordForVBD();
+                word = getWord(openNLPEWord.getWord());
             }
             if(word == null)
             {
-                openNLPWord.orignalWordForVBD_e();
-                word = getWord(openNLPWord.getWord());
+                openNLPEWord.orignalWordForVBD_e();
+                word = getWord(openNLPEWord.getWord());
             }
         }else{
-            if(openNLPWord.getPosTag().equals("NNS")) {
+            if(openNLPEWord.getPosTag().equals("NNS")) {
                 if (word == null) {
-                    openNLPWord.originalWordForNNS_S();
-                    word = getWord(openNLPWord.getWord());
+                    openNLPEWord.originalWordForNNS_S();
+                    word = getWord(openNLPEWord.getWord());
                 }
                 if (word == null) {
-                    openNLPWord.originalWordForNNS_ES();
-                    word = getWord(openNLPWord.getWord());
+                    openNLPEWord.originalWordForNNS_ES();
+                    word = getWord(openNLPEWord.getWord());
                 }
                 if (word == null) {
-                    openNLPWord.orignalWordForNNS_VES_IES();
-                    word = getWord(openNLPWord.getWord());
+                    openNLPEWord.orignalWordForNNS_VES_IES();
+                    word = getWord(openNLPEWord.getWord());
                 }
             }else{
-                if(openNLPWord.getPosTag().equals("VBZ")){
+                if(openNLPEWord.getPosTag().equals("VBZ")){
                     if (word == null) {
-                        openNLPWord.originalWordForNNS_S();
-                        word = getWord(openNLPWord.getWord());
+                        openNLPEWord.originalWordForNNS_S();
+                        word = getWord(openNLPEWord.getWord());
                     }
                     if (word == null) {
-                        openNLPWord.originalWordForNNS_ES();
-                        word = getWord(openNLPWord.getWord());
+                        openNLPEWord.originalWordForNNS_ES();
+                        word = getWord(openNLPEWord.getWord());
                     }
                 }
             }
@@ -117,8 +120,8 @@ public class DB_EV extends SQLiteOpenHelper{
         if(word != null){
             ArrayList<ELMEANING> allElMeaning = new ArrayList<>();
             getAllELMeaning(word,allElMeaning);
-            String vnMeaning = chooseProperMeaning(allElMeaning, openNLPWord.getPosTag());
-            openNLPWord.setVnMeaning(vnMeaning);
+            String vnMeaning = chooseProperMeaning(allElMeaning, openNLPEWord.getPosTag());
+            openNLPEWord.setVnMeaning(vnMeaning);
         }
 
     }
@@ -203,7 +206,6 @@ class POSTAG{
     int id;
     String meaning;
     int init;
-
 
     public POSTAG(int ID, String Meaning, int Init){
         this.id = ID;
