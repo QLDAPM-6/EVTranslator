@@ -187,7 +187,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
 
     // Cài đặt sự kiện on click cho các button
     private ArrayAdapter<String> adapter;
-    private AlertDialog dialog;
+    private AlertDialog dialogadd;
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -251,8 +251,8 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
                 Toast.makeText(getApplication(),"Added to folder " + adapter.getItem(which),Toast.LENGTH_LONG).show();
             }
         });
-        dialog = builder.create();
-        dialog.show();
+        dialogadd = builder.create();
+        dialogadd.show();
     }
     // event dialogue click oke
 
@@ -265,6 +265,7 @@ public class HomeTranslateActivity extends AppCompatActivity implements View.OnC
         Managerfavorite.getIntance().addChild(temp);// Them folder
         adapter.add(value);
         adapter.notifyDataSetChanged();
+        dialogadd.show();
     }
 
     @Override
