@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbFavorite;
 import com.example.qldapm.evtranslator.models.database.EVTranslatorDbHelper;
@@ -105,6 +106,10 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
     public void onDialogPositiveClick(DialogFragment dialog, String value,int thaotac) {
         // add new here
         if(thaotac == 0) {
+            if(!adapter.checkName(value, -1)) {
+                Toast.makeText(this, "This folder is already exist",Toast.LENGTH_SHORT).show();
+                return;
+            }
             absFile temp = GeneFolder(value);
             temp.setThuoctinhbosung(" ");
            long id = Managerfavorite.getIntance().dbprocess.SaveFolder(value, temp.getThuoctinhbosung());
@@ -118,6 +123,10 @@ public class FolderActivity extends AppCompatActivity implements AddFolder.Notic
 
             AddFolder dialogtemp = (AddFolder)dialog;
             int index = dialogtemp.GetID().intValue();
+            if(!adapter.checkName(value, index)) {
+                Toast.makeText(this, "This folder is already exist",Toast.LENGTH_SHORT).show();
+                return;
+            }
             absFile tam = adapter.getItem(index);
             tam.set_name(value);
             // create folder
